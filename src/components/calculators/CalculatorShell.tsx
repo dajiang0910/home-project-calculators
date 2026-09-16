@@ -1,58 +1,80 @@
-import type { CalculatorMetadata, ResultItem } from "@/src/lib/calculators";
+import type { ReactNode } from "react";
+import type { CalculatorMetadata, ResultItem, ShoppingListItem } from "@/src/lib/calculators";
+import styles from "./calculator.module.css";
 
 type CalculatorShellProps = {
   metadata: CalculatorMetadata;
-  children: React.ReactNode;
+  intro?: string;
+  children: ReactNode;
+  guide?: ReactNode;
   result?: readonly ResultItem[];
   errors?: Readonly<Record<string, string>>;
+  shoppingList?: readonly ShoppingListItem[];
+  resultNote?: string;
 };
 
-export function CalculatorShell({
-  metadata,
-  children,
-  result,
-  errors,
-}: CalculatorShellProps) {
+export function CalculatorShell({ metadata, intro, children, guide, result, errors, shoppingList, resultNote }: CalculatorShellProps) {
+  const invalid = errors && Object.keys(errors).length > 0;
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
-      <header className="space-y-3">
-        <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">
-          {metadata.category}
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-950">
-          {metadata.title}
-        </h1>
-        <p className="max-w-2xl text-zinc-600">{metadata.description}</p>
-      </header>
+    <main className={styles.page}>
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <p className={styles.eyebrow}>Home project calculators <span aria-hidden="true">/</span> {metadata.category}</p>
+          <h1>{metadata.title}</h1>
+          <p className={styles.intro}>{intro ?? metadata.description}</p>
+          <a className={styles.jumpLink} href="#calculator-results">View your estimate <span aria-hidden="true">↗</span></a>
+        </header>
 
-      <section aria-label="Calculator inputs" className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-        {children}
-      </section>
+        <div className={styles.workspace}>
+          <section aria-label="Calculator inputs" className={styles.inputPanel}>
+            {children}
+          </section>
 
-      {errors && Object.keys(errors).length > 0 ? (
-        <aside role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          <ul className="list-disc space-y-1 pl-5">
-            {Object.entries(errors).map(([field, message]) => (
-              <li key={field}>{message}</li>
-            ))}
-          </ul>
-        </aside>
-      ) : null}
-
-      {result && result.length > 0 ? (
-        <section aria-label="Calculator results" className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-          <h2 className="text-xl font-semibold text-emerald-950">Your result</h2>
-          <dl className="mt-4 grid gap-4 sm:grid-cols-2">
-            {result.map((item) => (
-              <div key={item.label}>
-                <dt className="text-sm text-emerald-800">{item.label}</dt>
-                <dd className="text-2xl font-semibold text-emerald-950">{item.value}</dd>
-                {item.detail ? <p className="text-sm text-emerald-800">{item.detail}</p> : null}
+          <div className={styles.summaryColumn}>
+            <section id="calculator-results" aria-label="Calculator results" className={styles.resultPanel}>
+              <div className={styles.resultHeading}>
+                <h2>Your estimate</h2>
+                <span className={styles.liveBadge}>Live estimate</span>
               </div>
-            ))}
-          </dl>
-        </section>
-      ) : null}
+              <div aria-live="polite" aria-atomic="true">
+                {invalid ? (
+                  <div className={styles.errorSummary}>
+                    <p>Let’s check those measurements.</p>
+                    <p>Correct the highlighted inputs to see your updated estimate.</p>
+                    <ul>{Object.entries(errors).map(([field, message]) => <li key={field}>{message}</li>)}</ul>
+                  </div>
+                ) : result?.length ? (
+                  <dl className={styles.results}>
+                    {result.map((item) => (
+                      <div key={item.label} className={item.emphasis ? styles.featuredResult : styles.resultRow}>
+                        <dt>{item.label}</dt>
+                        <dd>{item.value}</dd>
+                        {item.detail ? <dd className={styles.resultDetail}>{item.detail}</dd> : null}
+                      </div>
+                    ))}
+                  </dl>
+                ) : <p>Enter your measurements to see an estimate.</p>}
+              </div>
+              {resultNote ? <p className={styles.resultNote}>{resultNote}</p> : null}
+            </section>
+
+            {shoppingList?.length ? (
+              <section aria-labelledby="shopping-list-title" className={styles.shoppingPanel}>
+                <p className={styles.eyebrow}>Before you start</p>
+                <h2 id="shopping-list-title">Shopping List</h2>
+                <ul>{shoppingList.map((item) => (
+                  <li key={item.name}>
+                    <span aria-hidden="true" className={styles.listMarker}>✓</span>
+                    <div><h3>{item.name}</h3><p>{item.detail}</p></div>
+                  </li>
+                ))}</ul>
+              </section>
+            ) : null}
+          </div>
+        </div>
+        {guide}
+        <footer className={styles.footer}>Measure with confidence. Make room for your next project.</footer>
+      </div>
     </main>
   );
 }

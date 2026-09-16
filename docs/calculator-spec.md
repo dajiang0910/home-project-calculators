@@ -22,15 +22,13 @@ Inputs and outputs must state their units. Conversion belongs at the domain boun
 
 ## Paint Calculator specification (phase two)
 
-The first concrete calculator will use imperial defaults: room length, room width, wall height, opening area, coats, coverage per gallon, and optional waste rate. It will calculate wall area, subtract openings, multiply by coats, divide by coverage, apply waste, and round the recommended gallons up to a whole purchase unit.
-
-The result should include paintable area, total coverage area, unrounded gallons, and recommended gallons. It must reject non-positive dimensions or coverage, negative openings or waste, and openings larger than the wall area. Formula code belongs in `src/lib/calculators/paint/`; the registry entry is the only framework integration point.
+The implemented [Paint specification](paint-calculator.md) defines editable defaults, door/window assumptions, US and metric units, coverage and price conversion, purchase rounding, the paint-only cost estimate, static shopping recommendations, and validation limits. Formula code lives in `src/lib/calculators/paint/`; the definition is published once in the registry and rendered through the existing dynamic route.
 
 ## New calculator checklist
 
 1. Write the calculator-specific inputs, units, assumptions, and rounding rules.
 2. Implement pure types, validation, calculation, and result formatting.
-3. Add the definition to the central registry with a stable slug.
-4. Add contract and edge-case tests.
+3. Add and pass contract and edge-case tests.
+4. Add the definition to the central registry with a stable slug.
 5. Verify the dynamic route, metadata, keyboard form flow, errors, and responsive result layout.
 6. Run `npm run lint` and `npm run build`.

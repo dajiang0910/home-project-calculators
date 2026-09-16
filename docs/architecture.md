@@ -18,16 +18,22 @@ The framework is designed for 50–100 calculators without duplicating routing a
 
 ## Registry and extension flow
 
-`src/lib/calculators/registry.ts` is the single registration point. It is intentionally empty in phase one. A future calculator lives in its own directory, exports one definition, and adds one registry entry. Listing and lookup helpers provide the foundation for catalog pages, navigation, and sitemap generation.
+`src/lib/calculators/registry.ts` is the single registration point. Phase two publishes Paint after its specification and contract tests are ready. Each calculator lives in its own directory, exports one definition, and adds one registry entry. Listing and lookup helpers drive static route generation; unknown slugs, including inherited object property names, resolve to 404.
 
 ## Error and result flow
 
 Validation returns either a typed value or a map of field names to English messages. The client does not calculate invalid input. Valid input goes through `calculate`, and `formatResult` converts domain output into display-ready labeled values with units and optional detail text.
+
+Phase two evaluates immediately on initial render and every input change. Form state retains raw numeric strings, including empty strings. `validate` accepts unknown input and returns a parsed domain value. Domain methods retain their generic input/result types; the registry erases those types at the lookup boundary, so consumers must keep validation, calculation, and formatting paired with the same definition.
+
+Optional field groups and numeric bounds describe form presentation. `getFields(input)` resolves unit-dependent labels and bounds; `updateInput(input, name, value)` owns domain transformations such as unit conversion. The shared client only dispatches changes. `ResultItem.emphasis`, static shopping recommendations, and result notes supply presentation data without embedding formulas in React. No second unit or openings system was introduced: Paint owns its conversions and average opening sizes because phase one had neither abstraction.
+
+Educational content lives in `src/content/calculators/` and is referenced by the definition. The dynamic route renders `CalculatorGuide` on the server and passes it through the client as a child slot. Related links are enabled only for published registry entries. Shared calculator CSS is scoped to a module; the starter homepage and global layout are unchanged.
 
 ## Scaling rules
 
 - Keep domain code grouped by calculator, not by UI component.
 - Keep shared components generic and free of domain terminology.
 - Use stable slugs and avoid route-specific imports in formulas.
-- Add contract tests for every definition as the test runner is introduced.
+- Add contract tests before registering every definition. `npm test` compiles the pure TypeScript domain modules with the existing compiler and runs Node's built-in test runner; no testing framework dependency is needed.
 - Introduce a runtime schema library only when shared form generation requires it; the initial framework uses TypeScript plus calculator-owned validation.

@@ -4,7 +4,7 @@
 
 Home Improvement Calculator is an English-language collection of focused tools for homeowners, renters, and DIY professionals. Each calculator should answer one practical planning question quickly, explain the assumptions behind the number, and make the next action clear.
 
-The first release is a framework release. It establishes the shared page and calculation experience without publishing a concrete calculator.
+The first phase established the shared page and calculation framework. Phase two publishes the [Paint Calculator](paint-calculator.md) at `/calculators/paint` with live estimates, editable assumptions, US/metric units, a paint budget, and a basic shopping list.
 
 ## Information architecture
 

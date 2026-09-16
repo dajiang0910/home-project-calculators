@@ -21,6 +21,24 @@ export type CalculatorField = {
   placeholder?: string;
   options?: readonly CalculatorFieldOption[];
   required?: boolean;
+  min?: number;
+  max?: number;
+  step?: number | "any";
+  group?: string;
+};
+
+export type CalculatorFieldGroup = {
+  id: string;
+  title: string;
+  description?: string;
+  collapsible?: boolean;
+};
+
+export type CalculatorFormInput = Readonly<Record<string, unknown>>;
+
+export type ShoppingListItem = {
+  name: string;
+  detail: string;
 };
 
 export type ValidationErrors = Readonly<Record<string, string>>;
@@ -33,10 +51,12 @@ export type ResultItem = {
   label: string;
   value: string;
   detail?: string;
+  emphasis?: boolean;
 };
 
 export type CalculatorMetadata = {
   title: string;
+  seoTitle?: string;
   description: string;
   category: CalculatorCategory;
   keywords: readonly string[];
@@ -46,10 +66,27 @@ export type CalculatorDefinition<TInput, TResult> = {
   slug: string;
   metadata: CalculatorMetadata;
   fields: readonly CalculatorField[];
-  createInitialInput: () => TInput;
-  validate: (input: TInput) => ValidationResult<TInput>;
-  calculate: (input: TInput) => TResult;
-  formatResult: (result: TResult) => readonly ResultItem[];
+  fieldGroups?: readonly CalculatorFieldGroup[];
+  getFields?: (input: CalculatorFormInput) => readonly CalculatorField[];
+  updateInput?: (input: CalculatorFormInput, name: string, value: string) => CalculatorFormInput;
+  createInitialInput(): TInput;
+  validate(input: unknown): ValidationResult<TInput>;
+  calculate(input: TInput): TResult;
+  formatResult(result: TResult): readonly ResultItem[];
+  shoppingList?: readonly ShoppingListItem[];
+  resultNote?: string;
+  content?: CalculatorContent;
 };
 
+// The registry erases domain types; consumers must validate before calculate and
+// pass the returned result only to that same definition's formatter.
 export type AnyCalculatorDefinition = CalculatorDefinition<unknown, unknown>;
+
+export type CalculatorContent = {
+  intro: string;
+  howItWorks: readonly { title: string; text: string }[];
+  formulas: readonly { label: string; expression: string }[];
+  example: { description: string; steps: readonly string[]; conclusion: string };
+  faq: readonly { question: string; answer: string }[];
+  related: readonly { slug: string; title: string; description: string }[];
+};

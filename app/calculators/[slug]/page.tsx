@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CalculatorClient } from "@/src/components/calculators/CalculatorClient";
-import { getCalculator } from "@/src/lib/calculators";
+import { CalculatorGuide } from "@/src/components/calculators/CalculatorGuide";
+import { getCalculator, listCalculators } from "@/src/lib/calculators";
+
+export function generateStaticParams() {
+  return listCalculators().map((calculator) => ({ slug: calculator.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -11,7 +16,7 @@ export async function generateMetadata({
   if (!calculator) return {};
 
   return {
-    title: calculator.metadata.title,
+    title: calculator.metadata.seoTitle ?? calculator.metadata.title,
     description: calculator.metadata.description,
     keywords: [...calculator.metadata.keywords],
   };
@@ -21,7 +26,12 @@ export default async function CalculatorPage({
   params,
 }: PageProps<"/calculators/[slug]">) {
   const { slug } = await params;
-  if (!getCalculator(slug)) notFound();
+  const calculator = getCalculator(slug);
+  if (!calculator) notFound();
 
-  return <CalculatorClient slug={slug} />;
+  return (
+    <CalculatorClient key={slug} slug={slug}>
+      {calculator.content ? <CalculatorGuide content={calculator.content} /> : null}
+    </CalculatorClient>
+  );
 }
