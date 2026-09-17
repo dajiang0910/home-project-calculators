@@ -19,6 +19,7 @@
 .heroImage { object-fit: cover; object-position: right center; opacity: .92; }
 .heroFlooring { background-color: #e5f1ff; }
 .heroTile { background-color: #edf3f7; }
+.heroDrywall { background-color: #eef2f5; }
 .heroPaint { background-color: #e9f3ff; }
 
 .workspace { display: grid; gap: 20px; align-items: start; }

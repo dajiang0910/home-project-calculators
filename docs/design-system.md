@@ -10,7 +10,7 @@ Tokens live in `src/styles/tokens.css` and are imported by `app/globals.css`. Se
 
 `SiteHeader → Breadcrumb → CalculatorHero → CalculatorForm → ResultCard → ShoppingList → CalculatorGuide → SiteFooter` is the canonical order. `CalculatorClient` owns raw input state and the validation/calculation pipeline. It passes display-ready values into the shared components and never recalculates in JSX.
 
-Hero art is presentation-only and lives in `public/images/calculators/`; the current Paint and Flooring images are local generated assets with no text, product branding, or business data. The art is hidden on narrow screens so it never competes with the form.
+Hero art is presentation-only and lives in `public/images/calculators/`; each published calculator uses a local generated asset with no text, product branding, or business data. The art is hidden on narrow screens so it never competes with the form.
 
 ## Component rules
 

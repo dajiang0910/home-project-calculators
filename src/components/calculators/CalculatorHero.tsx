@@ -6,11 +6,18 @@ import styles from "./calculator.module.css";
 
 export function CalculatorHero({ slug, metadata, intro }: { slug: string; metadata: CalculatorMetadata; intro?: string }) {
   const hero = calculatorPresentation[slug]?.hero ?? "paint";
-  const image = hero === "flooring"
-    ? "/images/calculators/flooring-hero.png"
-    : hero === "tile"
-      ? "/images/calculators/tile-hero.png"
-      : "/images/calculators/paint-hero.png";
+  const image = {
+    paint: "/images/calculators/paint-hero.png",
+    flooring: "/images/calculators/flooring-hero.png",
+    tile: "/images/calculators/tile-hero.png",
+    drywall: "/images/calculators/drywall-hero.png",
+  }[hero];
+  const heroClass = {
+    paint: styles.heroPaint,
+    flooring: styles.heroFlooring,
+    tile: styles.heroTile,
+    drywall: styles.heroDrywall,
+  }[hero];
   return (
     <section className={styles.hero}>
       <div className={styles.heroCopy}>
@@ -24,7 +31,7 @@ export function CalculatorHero({ slug, metadata, intro }: { slug: string; metada
           <span><Icon label="$" size="small" />Free to use</span>
         </div>
       </div>
-      <div aria-hidden="true" className={`${styles.heroVisual} ${hero === "flooring" ? styles.heroFlooring : hero === "tile" ? styles.heroTile : styles.heroPaint}`}>
+      <div aria-hidden="true" className={`${styles.heroVisual} ${heroClass}`}>
         <Image
           src={image}
           alt=""

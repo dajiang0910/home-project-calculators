@@ -28,6 +28,10 @@ The implemented [Paint specification](paint-calculator.md) defines editable defa
 
 The implemented [Tile specification](tile-calculator.md) defines surface and tile dimensions, US and metric input conventions, waste, whole-tile and full-box rounding, box pricing, validation limits, and excluded layout assumptions. Formula code lives in `src/lib/calculators/tile/`; the definition is published once in the registry and rendered through the shared dynamic route.
 
+## Drywall Calculator specification
+
+The implemented [Drywall specification](drywall-calculator.md) defines selectable wall and ceiling coverage, opening deductions, sheet dimensions, US and metric inputs, waste, full-sheet rounding, sheet pricing, validation limits, and excluded layout assumptions. Formula code lives in `src/lib/calculators/drywall/`; the definition is published once in the registry and rendered through the shared dynamic route.
+
 ## New calculator checklist
 
 1. Write the calculator-specific inputs, units, assumptions, and rounding rules.
