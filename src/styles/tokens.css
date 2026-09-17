@@ -1,0 +1,49 @@
+:root {
+  --hpc-color-page: #ffffff;
+  --hpc-color-surface: #ffffff;
+  --hpc-color-surface-soft: #f5f9ff;
+  --hpc-color-brand-soft: #eaf3ff;
+  --hpc-color-brand: #125de6;
+  --hpc-color-brand-hover: #0d4fc4;
+  --hpc-color-brand-active: #103fa0;
+  --hpc-color-text: #142d50;
+  --hpc-color-text-secondary: #496386;
+  --hpc-color-border: #dee7f2;
+  --hpc-color-control-border: #8da2bf;
+  --hpc-color-success-soft: #effaf5;
+  --hpc-color-success: #21745d;
+  --hpc-color-danger: #b42318;
+  --hpc-color-danger-soft: #fff4f2;
+  --hpc-color-focus: #125de6;
+
+  --hpc-font-body: var(--font-geist-sans), "Segoe UI", sans-serif;
+  --hpc-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --hpc-text-xs: 12px;
+  --hpc-text-sm: 14px;
+  --hpc-text-md: 16px;
+  --hpc-text-lg: 20px;
+  --hpc-text-xl: 24px;
+  --hpc-text-hero: clamp(32px, 4vw, 40px);
+  --hpc-leading-tight: 1.2;
+  --hpc-leading-body: 1.55;
+  --hpc-leading-loose: 1.7;
+
+  --hpc-space-1: 4px;
+  --hpc-space-2: 8px;
+  --hpc-space-3: 12px;
+  --hpc-space-4: 16px;
+  --hpc-space-5: 20px;
+  --hpc-space-6: 24px;
+  --hpc-space-8: 32px;
+  --hpc-space-10: 40px;
+  --hpc-space-12: 48px;
+  --hpc-space-16: 64px;
+
+  --hpc-radius-control: 6px;
+  --hpc-radius-card: 8px;
+  --hpc-radius-icon: 10px;
+  --hpc-radius-pill: 999px;
+  --hpc-shadow-menu: 0 8px 20px rgb(20 45 80 / 10%);
+  --hpc-control-height: 44px;
+  --hpc-page-max-width: 1200px;
+}

@@ -1,0 +1,101 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  border: 1px solid var(--hpc-color-border);
+  border-radius: var(--hpc-radius-pill);
+  color: var(--hpc-color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.badgeLive {
+  border-color: #b7ddcf;
+  background: var(--hpc-color-success-soft);
+  color: var(--hpc-color-success);
+}
+
+.badgeComingSoon {
+  background: var(--hpc-color-surface-soft);
+}
+
+.primaryButton {
+  display: inline-flex;
+  min-height: var(--hpc-control-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--hpc-space-2);
+  border: 1px solid var(--hpc-color-brand);
+  border-radius: var(--hpc-radius-control);
+  background: var(--hpc-color-brand);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--hpc-text-sm);
+  font-weight: 600;
+  padding: 0 var(--hpc-space-5);
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.primaryButton:hover { background: var(--hpc-color-brand-hover); border-color: var(--hpc-color-brand-hover); }
+.primaryButton:active { background: var(--hpc-color-brand-active); border-color: var(--hpc-color-brand-active); }
+.primaryButton:focus-visible { outline: 2px solid var(--hpc-color-focus); outline-offset: 2px; }
+
+.unitToggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--hpc-color-border);
+  border-radius: var(--hpc-radius-control);
+  background: var(--hpc-color-surface-soft);
+}
+
+.unitOption {
+  position: relative;
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--hpc-space-3);
+  border-radius: 4px;
+  color: var(--hpc-color-text-secondary);
+  cursor: pointer;
+  font-size: var(--hpc-text-xs);
+  font-weight: 600;
+  text-align: center;
+}
+
+.unitOption input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.unitOption:has(input:checked) { background: var(--hpc-color-brand); color: #fff; }
+.unitOption:has(input:focus-visible) { outline: 2px solid var(--hpc-color-focus); outline-offset: 1px; }
+
+.icon {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--hpc-radius-icon);
+  background: var(--hpc-color-brand-soft);
+  color: var(--hpc-color-brand);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.iconSmall { width: 20px; height: 20px; border-radius: 50%; font-size: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton { transition: none; }
+}

@@ -30,6 +30,12 @@ Optional field groups and numeric bounds describe form presentation. `getFields(
 
 Educational content lives in `src/content/calculators/` and is referenced by the definition. The dynamic route renders `CalculatorGuide` on the server and passes it through the client as a child slot. Related links are enabled only for published registry entries. Shared calculator CSS is scoped to a module; the starter homepage and global layout are unchanged.
 
+## Shared UI design system
+
+Published calculators use the composition `SiteHeader`, `Breadcrumb`, `CalculatorHero`, `CalculatorForm`, `ResultCard`, `ShoppingList`, `CalculatorGuide`, and `SiteFooter`. `CalculatorForm` delegates fields to `FormField` and groups to `FormSection`; `ResultCard` delegates display rows to `ResultMetric` and cost emphasis to `CostEstimate`. Guide content is split into `InfoCard`, `FormulaCard`, `ExampleCard`, `FAQ`, and `RelatedCalculatorCard`. These components consume the existing definition and content contracts and contain no business formulas.
+
+Visual values are centralized in `src/styles/tokens.css`, imported by `app/globals.css`. Calculator-specific presentation may identify a hero treatment or result icon, but it must not create a second spacing, color, control, or breakpoint system. The reference image is a visual source only; calculation values, SEO metadata, routes, and shopping-list semantics come from the published definition.
+
 ## Scaling rules
 
 - Keep domain code grouped by calculator, not by UI component.

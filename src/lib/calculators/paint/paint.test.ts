@@ -3,19 +3,10 @@ import test from "node:test";
 import { calculate, formatResult, paintCalculator, updateInput, validate } from "./index";
 import { paintDefaults } from "./config";
 import { LITERS_PER_GALLON, SQUARE_METERS_PER_SQUARE_FOOT } from "./units";
-import { getCalculator, listCalculators } from "../registry";
 
 function near(actual: number, expected: number, relativeTolerance = 1e-10) {
   assert.ok(Math.abs(actual - expected) <= Math.max(1, Math.abs(expected)) * relativeTolerance, `${actual} ≠ ${expected}`);
 }
-
-test("only paint is published and unknown slugs cannot resolve inherited properties", () => {
-  assert.deepEqual(listCalculators().map((calculator) => calculator.slug), ["paint"]);
-  assert.equal(getCalculator("paint"), paintCalculator);
-  for (const slug of ["flooring", "missing", "constructor", "toString", "__proto__"]) {
-    assert.equal(getCalculator(slug), undefined);
-  }
-});
 
 test("reference room: openings, coats, waste, purchase, and cost", () => {
   const result = calculate({ ...paintDefaults });

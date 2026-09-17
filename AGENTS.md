@@ -17,3 +17,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Add product and behavior decisions to `docs/` when introducing a new calculator or changing the shared contract.
 - Preserve the `app/calculators/[slug]` dynamic route so URLs remain registry-driven.
 - Do not add a concrete calculator to the registry until its specification and contract tests are ready.
+- New calculator pages must reuse the shared Home Project Calculators design system: the dynamic route, `CalculatorClient`, `CalculatorForm`, `ResultCard`, `ShoppingList`, and `CalculatorGuide`. Add a shared component when an interaction is reusable; do not duplicate a calculator-specific form or page shell.
+- Use the semantic tokens in `src/styles/tokens.css` for calculator UI. Keep unit conversion and formatting in the calculator definition, and keep presentation-only differences out of business input and result types.
