@@ -44,9 +44,26 @@
 .nav a, .nav summary { color: var(--hpc-color-text); font-size: 12px; font-weight: 600; text-decoration: none; }
 .nav a:hover, .nav summary:hover { color: var(--hpc-color-brand); }
 .nav details { position: relative; }
-.nav summary { cursor: pointer; list-style: none; }
+.nav summary {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
 .nav summary::-webkit-details-marker { display: none; }
-.nav summary::after { content: "⌄"; margin-left: 5px; color: var(--hpc-color-text-secondary); }
+.nav summary::after {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-right: 2px solid var(--hpc-color-brand);
+  border-bottom: 2px solid var(--hpc-color-brand);
+  content: "";
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 160ms ease;
+}
+.nav details[open] summary::after { transform: translateY(-1px) rotate(225deg); }
 .menu {
   position: absolute;
   z-index: 2;
