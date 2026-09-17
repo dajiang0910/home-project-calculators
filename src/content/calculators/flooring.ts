@@ -1,0 +1,30 @@
+import type { CalculatorContent } from "../../lib/calculators/types";
+
+export const flooringContent: CalculatorContent = {
+  intro: "Plan your next floor with confidence. Enter your room size and box coverage to estimate flooring, allow for waste, and see how many boxes to buy.",
+  howItWorks: [
+    { title: "Measure your floor", text: "Enter the length and width of a rectangular room in feet or meters." },
+    { title: "Check your flooring box", text: "Enter coverage per box, your waste allowance, and the price of one box." },
+    { title: "Plan your purchase", text: "We add waste, round up to full boxes, and multiply by your box price." },
+  ],
+  formulas: [
+    { label: "Floor Area", expression: "Room length × room width" },
+    { label: "Required Area With Waste", expression: "Floor area × (1 + waste ÷ 100)" },
+    { label: "Boxes Needed", expression: "Round up (required area ÷ coverage per box)" },
+    { label: "Estimated Cost", expression: "Boxes needed × price per box" },
+  ],
+  example: {
+    description: "A 14 × 12 ft room, 10% waste, and flooring covering 23.8 sq ft per box at $50 per box.",
+    steps: ["14 × 12 = 168 sq ft of floor.", "168 × 1.10 = 184.8 sq ft with waste.", "184.8 ÷ 23.8 = 7.7647… boxes; round up to 8.", "8 × $50 = $400 in flooring."],
+    conclusion: "Buy 8 boxes. The flooring estimate is $400 before tax and installation supplies.",
+  },
+  faq: [
+    { question: "How much waste should I allow?", answer: "The editable default is 10%. Cuts, layout, and patterns affect waste; use the allowance recommended for your product and installation." },
+    { question: "Does switching units change the number of boxes?", answer: "No. We convert room dimensions and coverage together. The same physical box keeps the same price in USD." },
+    { question: "Can I estimate an irregular room?", answer: "Split it into rectangles and estimate each section separately. Rounding each section can produce more spare boxes than a combined order." },
+    { question: "What does the cost include?", answer: "Full boxes of flooring only. Underlayment, transitions, tools, adhesive, labor, delivery, and tax are excluded." },
+  ],
+  related: [
+    { slug: "paint", title: "Paint Calculator", description: "Estimate paint and material cost for the walls around your new floor." },
+  ],
+};
