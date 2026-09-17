@@ -21,6 +21,7 @@
 .heroTile { background-color: #edf3f7; }
 .heroDrywall { background-color: #eef2f5; }
 .heroWallpaper { background-color: #edf3f5; }
+.heroCeilingPaint { background-color: #f0f3f4; }
 .heroPaint { background-color: #e9f3ff; }
 
 .workspace { display: grid; gap: 20px; align-items: start; }

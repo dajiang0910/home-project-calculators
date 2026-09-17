@@ -39,5 +39,6 @@ export const paintContent: CalculatorContent = {
     { slug: "flooring", title: "Flooring Calculator", description: "Plan floor area, waste, and the number of flooring boxes to buy." },
     { slug: "drywall", title: "Drywall Calculator", description: "Estimate sheets and material cost before preparing walls for paint." },
     { slug: "wallpaper", title: "Wallpaper Calculator", description: "Estimate rolls, pattern repeat, waste, and material cost for four walls." },
+    { slug: "ceiling-paint", title: "Ceiling Paint Calculator", description: "Estimate ceiling paint for coats, overhead waste, and whole-gallon purchase cost." },
   ],
 };

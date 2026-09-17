@@ -36,6 +36,10 @@ The implemented [Drywall specification](drywall-calculator.md) defines selectabl
 
 The implemented [Wallpaper specification](wallpaper-calculator.md) defines room and opening measurements, physical roll dimensions, vertical pattern repeat, extra waste, separate strip and roll rounding, roll pricing, US and metric inputs, validation limits, and excluded match/layout assumptions. Formula code lives in `src/lib/calculators/wallpaper/`; the definition is published once in the registry and rendered through the shared dynamic route.
 
+## Ceiling Paint Calculator specification
+
+The implemented [Ceiling Paint specification](ceiling-paint-calculator.md) defines a rectangular ceiling surface, coats, paint coverage, overhead-work waste, whole-gallon or whole-liter purchase rounding, price conversion, US and metric inputs, validation limits, and excluded fixture/layout assumptions. Formula code lives in `src/lib/calculators/ceiling-paint/`; the definition is published once in the registry and rendered through the shared dynamic route.
+
 ## New calculator checklist
 
 1. Write the calculator-specific inputs, units, assumptions, and rounding rules.

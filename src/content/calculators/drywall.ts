@@ -37,6 +37,7 @@ export const drywallContent: CalculatorContent = {
   related: [
     { slug: "paint", title: "Paint Calculator", description: "Estimate paint after the drywall is finished and ready for coating." },
     { slug: "wallpaper", title: "Wallpaper Calculator", description: "Estimate rolls for a finished wall surface, including pattern repeat." },
+    { slug: "ceiling-paint", title: "Ceiling Paint Calculator", description: "Estimate paint for a new or repaired rectangular ceiling." },
     { slug: "flooring", title: "Flooring Calculator", description: "Plan the floor area, waste, boxes, and material cost for the same room." },
   ],
 };

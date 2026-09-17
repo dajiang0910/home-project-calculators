@@ -1,5 +1,5 @@
 export type CalculatorPresentation = {
-  hero: "paint" | "flooring" | "tile" | "drywall" | "wallpaper";
+  hero: "paint" | "flooring" | "tile" | "drywall" | "wallpaper" | "ceilingPaint";
 };
 
 export const calculatorPresentation: Readonly<Record<string, CalculatorPresentation>> = {
@@ -8,6 +8,7 @@ export const calculatorPresentation: Readonly<Record<string, CalculatorPresentat
   tile: { hero: "tile" },
   drywall: { hero: "drywall" },
   wallpaper: { hero: "wallpaper" },
+  "ceiling-paint": { hero: "ceilingPaint" },
 };
 
 const costLabels = new Set(["Estimated Material Cost", "Estimated Cost"]);
