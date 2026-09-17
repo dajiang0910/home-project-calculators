@@ -11,12 +11,14 @@ export function CalculatorHero({ slug, metadata, intro }: { slug: string; metada
     flooring: "/images/calculators/flooring-hero.png",
     tile: "/images/calculators/tile-hero.png",
     drywall: "/images/calculators/drywall-hero.png",
+    wallpaper: "/images/calculators/wallpaper-hero.png",
   }[hero];
   const heroClass = {
     paint: styles.heroPaint,
     flooring: styles.heroFlooring,
     tile: styles.heroTile,
     drywall: styles.heroDrywall,
+    wallpaper: styles.heroWallpaper,
   }[hero];
   return (
     <section className={styles.hero}>

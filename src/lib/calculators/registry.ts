@@ -3,6 +3,7 @@ import { paintCalculator } from "./paint";
 import { flooringCalculator } from "./flooring";
 import { tileCalculator } from "./tile";
 import { drywallCalculator } from "./drywall";
+import { wallpaperCalculator } from "./wallpaper";
 
 /**
  * The single registration point for calculators published by the application.
@@ -13,6 +14,7 @@ export const calculatorRegistry = {
   flooring: flooringCalculator,
   tile: tileCalculator,
   drywall: drywallCalculator,
+  wallpaper: wallpaperCalculator,
 } satisfies Readonly<Record<string, AnyCalculatorDefinition>>;
 
 export type CalculatorSlug = keyof typeof calculatorRegistry;
