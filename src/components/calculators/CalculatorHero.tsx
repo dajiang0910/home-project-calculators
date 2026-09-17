@@ -13,6 +13,7 @@ export function CalculatorHero({ slug, metadata, intro }: { slug: string; metada
     drywall: "/images/calculators/drywall-hero.png",
     wallpaper: "/images/calculators/wallpaper-hero.png",
     ceilingPaint: "/images/calculators/ceiling-paint-hero.png",
+    baseboard: "/images/calculators/baseboard-hero.png",
   }[hero];
   const heroClass = {
     paint: styles.heroPaint,
@@ -21,6 +22,7 @@ export function CalculatorHero({ slug, metadata, intro }: { slug: string; metada
     drywall: styles.heroDrywall,
     wallpaper: styles.heroWallpaper,
     ceilingPaint: styles.heroCeilingPaint,
+    baseboard: styles.heroBaseboard,
   }[hero];
   return (
     <section className={styles.hero}>

@@ -40,6 +40,10 @@ The implemented [Wallpaper specification](wallpaper-calculator.md) defines room 
 
 The implemented [Ceiling Paint specification](ceiling-paint-calculator.md) defines a rectangular ceiling surface, coats, paint coverage, overhead-work waste, whole-gallon or whole-liter purchase rounding, price conversion, US and metric inputs, validation limits, and excluded fixture/layout assumptions. Formula code lives in `src/lib/calculators/ceiling-paint/`; the definition is published once in the registry and rendered through the shared dynamic route.
 
+## Baseboard Calculator specification
+
+The implemented [Baseboard specification](baseboard-calculator.md) defines a rectangular room perimeter, door-opening deductions, stock piece length, cut waste, whole-piece rounding, piece pricing, US and metric inputs, validation limits, and excluded trim/layout assumptions. Formula code lives in `src/lib/calculators/baseboard/`; the definition is published once in the registry and rendered through the shared dynamic route.
+
 ## New calculator checklist
 
 1. Write the calculator-specific inputs, units, assumptions, and rounding rules.
