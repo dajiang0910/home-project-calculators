@@ -5,6 +5,12 @@ import { calculatorPresentation } from "./presentation";
 import styles from "./calculator.module.css";
 
 export function CalculatorHero({ slug, metadata, intro }: { slug: string; metadata: CalculatorMetadata; intro?: string }) {
+  const hero = calculatorPresentation[slug]?.hero ?? "paint";
+  const image = hero === "flooring"
+    ? "/images/calculators/flooring-hero.png"
+    : hero === "tile"
+      ? "/images/calculators/tile-hero.png"
+      : "/images/calculators/paint-hero.png";
   return (
     <section className={styles.hero}>
       <div className={styles.heroCopy}>
@@ -18,9 +24,9 @@ export function CalculatorHero({ slug, metadata, intro }: { slug: string; metada
           <span><Icon label="$" size="small" />Free to use</span>
         </div>
       </div>
-      <div aria-hidden="true" className={`${styles.heroVisual} ${calculatorPresentation[slug]?.hero === "flooring" ? styles.heroFlooring : styles.heroPaint}`}>
+      <div aria-hidden="true" className={`${styles.heroVisual} ${hero === "flooring" ? styles.heroFlooring : hero === "tile" ? styles.heroTile : styles.heroPaint}`}>
         <Image
-          src={calculatorPresentation[slug]?.hero === "flooring" ? "/images/calculators/flooring-hero.png" : "/images/calculators/paint-hero.png"}
+          src={image}
           alt=""
           fill
           sizes="(max-width: 639px) 0vw, 42vw"

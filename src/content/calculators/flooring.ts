@@ -26,5 +26,6 @@ export const flooringContent: CalculatorContent = {
   ],
   related: [
     { slug: "paint", title: "Paint Calculator", description: "Estimate paint and material cost for the walls around your new floor." },
+    { slug: "tile", title: "Tile Calculator", description: "Estimate individual tiles, full boxes, waste, and material cost." },
   ],
 };

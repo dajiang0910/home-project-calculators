@@ -1,6 +1,7 @@
 import type { AnyCalculatorDefinition } from "./types";
 import { paintCalculator } from "./paint";
 import { flooringCalculator } from "./flooring";
+import { tileCalculator } from "./tile";
 
 /**
  * The single registration point for calculators published by the application.
@@ -9,6 +10,7 @@ import { flooringCalculator } from "./flooring";
 export const calculatorRegistry = {
   paint: paintCalculator,
   flooring: flooringCalculator,
+  tile: tileCalculator,
 } satisfies Readonly<Record<string, AnyCalculatorDefinition>>;
 
 export type CalculatorSlug = keyof typeof calculatorRegistry;
