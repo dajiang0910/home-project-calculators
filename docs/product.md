@@ -9,9 +9,12 @@ The first phase established the shared page and calculation framework. Phase two
 ## Information architecture
 
 - `/` introduces the collection and links to available calculators.
-- `/calculators` will list calculators and support category discovery.
+- `/calculators` lists calculators and supports search and category discovery.
+- `/calculators/categories/[category]` hosts published project hubs without colliding with calculator slugs.
 - `/calculators/[slug]` is the canonical page for one calculator.
-- Categories such as Painting, Flooring, Roofing, Landscaping, and General Home Projects organize discovery without coupling formulas to the route layer.
+- `/how-we-calculate` explains shared unit, waste, rounding, cost, and testing decisions.
+- `/about`, `/privacy`, `/terms`, and `/contact` provide the site trust layer.
+- Painting, Flooring, Walls, Trim, Construction, Outdoor, and Roofing organize discovery without coupling formulas to the route layer. A category page is published only after it contains a tested calculator.
 
 ## Experience principles
 
@@ -24,7 +27,7 @@ The first phase established the shared page and calculation framework. Phase two
 
 ## SEO and content
 
-Each calculator definition owns its title, description, category, and keywords. The route uses those values for metadata, while longer educational guidance belongs beside the calculator in page content. URLs use stable lowercase slugs so links remain durable as the catalog grows.
+The lightweight calculator catalog owns each published tool's title, description, category, keywords, discovery summary, and image. Calculator definitions reference that metadata and continue to own domain behavior. Routes use catalog values for canonical metadata, directory grouping, search, category hubs, and the generated sitemap. Longer educational guidance belongs beside the calculator in page content. URLs use stable lowercase slugs so links remain durable as the catalog grows.
 
 ## Scope boundaries
 

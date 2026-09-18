@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
-import type { CalculatorMetadata, ResultItem, ShoppingListItem, ValidationErrors } from "@/src/lib/calculators";
+import { getCalculatorCategory } from "@/src/lib/calculators/catalog";
+import type { CalculatorMetadata, ResultItem, ShoppingListItem, ValidationErrors } from "@/src/lib/calculators/types";
 import { Breadcrumb } from "../site/Breadcrumb";
-import { SiteFooter } from "../site/SiteFooter";
-import { SiteHeader } from "../site/SiteHeader";
 import { CalculatorHero } from "./CalculatorHero";
 import { ResultCard } from "./ResultCard";
 import { ShoppingList } from "./ShoppingList";
@@ -21,11 +20,16 @@ type CalculatorShellProps = {
 };
 
 export function CalculatorShell({ slug, metadata, intro, children, guide, result, errors, shoppingList, resultNote }: CalculatorShellProps) {
+  const category = getCalculatorCategory(metadata.category);
   return (
-    <main className={styles.page}>
-      <SiteHeader />
+    <main id="main-content" className={styles.page}>
       <div className={styles.container}>
-        <Breadcrumb title={metadata.title} />
+        <Breadcrumb items={[
+          { label: "Home", href: "/" },
+          { label: "Calculators", href: "/calculators" },
+          ...(category ? [{ label: category.shortTitle, href: `/calculators/categories/${category.slug}` }] : []),
+          { label: metadata.title },
+        ]} />
         <CalculatorHero slug={slug} metadata={metadata} intro={intro} />
         <div className={styles.workspace}>
           <section aria-label="Calculator inputs" className={styles.inputPanel}>{children}</section>
@@ -36,7 +40,6 @@ export function CalculatorShell({ slug, metadata, intro, children, guide, result
         </div>
         {guide}
       </div>
-      <SiteFooter />
     </main>
   );
 }

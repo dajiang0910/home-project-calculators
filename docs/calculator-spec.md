@@ -49,6 +49,7 @@ The implemented [Baseboard specification](baseboard-calculator.md) defines a rec
 1. Write the calculator-specific inputs, units, assumptions, and rounding rules.
 2. Implement pure types, validation, calculation, and result formatting.
 3. Add and pass contract and edge-case tests.
-4. Add the definition to the central registry with a stable slug.
-5. Verify the dynamic route, metadata, keyboard form flow, errors, and responsive result layout.
-6. Run `npm run lint` and `npm run build`.
+4. Add the discovery metadata to the catalog and reference it from the definition.
+5. Add the definition to the central registry with the same stable slug; the catalog contract test must pass.
+6. Verify the dynamic route, category hub, sitemap entry, metadata, keyboard form flow, errors, and responsive result layout.
+7. Run `npm run lint` and `npm run build`.

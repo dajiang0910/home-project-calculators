@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { listCalculators } from "@/src/lib/calculators";
+import { calculatorCatalog } from "@/src/lib/calculators/catalog";
 import styles from "./site.module.css";
 
 export function SiteHeader() {
-  const calculators = listCalculators();
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
@@ -19,9 +18,11 @@ export function SiteHeader() {
           <details>
             <summary>Calculators</summary>
             <div className={styles.menu}>
-              {calculators.map((calculator) => <Link key={calculator.slug} href={`/calculators/${calculator.slug}`}>{calculator.metadata.title}</Link>)}
+              <Link href="/calculators" className={styles.menuAll}>Browse all calculators <span aria-hidden="true">→</span></Link>
+              {calculatorCatalog.map((calculator) => <Link key={calculator.slug} href={`/calculators/${calculator.slug}`}>{calculator.metadata.title}</Link>)}
             </div>
           </details>
+          <Link href="/how-we-calculate" className={styles.methodologyLink}>How we calculate</Link>
         </nav>
       </div>
     </header>

@@ -1,9 +1,11 @@
 export type CalculatorCategory =
   | "painting"
   | "flooring"
+  | "walls"
+  | "construction"
+  | "outdoor"
   | "roofing"
-  | "landscaping"
-  | "general";
+  | "trim";
 
 export type CalculatorFieldType = "number" | "select" | "text";
 

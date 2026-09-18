@@ -43,3 +43,13 @@ Visual values are centralized in `src/styles/tokens.css`, imported by `app/globa
 - Use stable slugs and avoid route-specific imports in formulas.
 - Add contract tests before registering every definition. `npm test` compiles the pure TypeScript domain modules with the existing compiler and runs Node's built-in test runner; no testing framework dependency is needed.
 - Introduce a runtime schema library only when shared form generation requires it; the initial framework uses TypeScript plus calculator-owned validation.
+
+## V2 discovery and SEO foundation
+
+`src/lib/calculators/catalog.ts` is the lightweight discovery source for the homepage, header, directory, category hubs, search, sitemap, and calculator metadata. Calculator definitions reference the catalog metadata object so titles, descriptions, categories, and keywords have one owner. `registry.ts` remains the only runtime registration point for formula implementations; a contract test keeps catalog and registry order aligned.
+
+The public discovery path is `Home → /calculators → /calculators/categories/[category] → /calculators/[slug]`. Category hubs live under `/calculators/categories/` because the stable calculator slug `/calculators/flooring` would otherwise conflict with a Flooring category page. Only categories with at least one published calculator are statically generated and included in the sitemap. Planned categories remain catalog data until a tested calculator makes the hub useful.
+
+Root layout metadata, canonical URLs, sitemap, robots, and structured data use `src/lib/seo/`. Set `NEXT_PUBLIC_SITE_URL` to the deployed origin; local development falls back to `http://localhost:3000`. The homepage emits `WebSite` and `Organization` JSON-LD. Calculator, directory, and category pages emit `BreadcrumbList` JSON-LD.
+
+The root layout owns the shared `SiteHeader` and `SiteFooter`. Calculator pages retain their registry-driven dynamic route and shared calculator composition without duplicating global site chrome.

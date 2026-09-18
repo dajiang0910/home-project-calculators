@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { baseboardContent } from "../../../content/calculators/baseboard";
 import {
   baseboardDefaults,
@@ -136,13 +137,7 @@ export function formatResult(result: BaseboardResult): readonly ResultItem[] {
 
 export const baseboardCalculator: CalculatorDefinition<BaseboardInput, BaseboardResult> = {
   slug: "baseboard",
-  metadata: {
-    title: "Baseboard Calculator",
-    seoTitle: "Baseboard Calculator: Linear Feet, Pieces & Cost",
-    description: "Estimate baseboard trim for a rectangular room. Deduct door openings, add cut waste, and calculate the full pieces and cost to buy.",
-    category: "general",
-    keywords: ["baseboard calculator", "baseboard trim calculator", "baseboard linear feet", "baseboard cost calculator"],
-  },
+  metadata: calculatorCatalogBySlug.baseboard.metadata,
   fields: getBaseboardFields("imperial"),
   fieldGroups: baseboardFieldGroups,
   getFields: (input) => getBaseboardFields(isBaseboardUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),

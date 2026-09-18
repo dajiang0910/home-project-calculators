@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { flooringContent } from "../../../content/calculators/flooring";
 import { flooringDefaults, flooringFieldGroups, flooringShoppingList, flooringUnits, getFlooringFields, isFlooringUnitSystem, type FlooringInput, type FlooringUnitSystem } from "./config";
 
@@ -94,11 +95,7 @@ export function formatResult(result: FlooringResult): readonly ResultItem[] {
 
 export const flooringCalculator: CalculatorDefinition<FlooringInput, FlooringResult> = {
   slug: "flooring",
-  metadata: {
-    title: "Flooring Calculator", seoTitle: "Flooring Calculator: Boxes, Waste & Cost",
-    description: "Calculate floor area, add waste, and estimate flooring boxes and cost in US or metric units.",
-    category: "flooring", keywords: ["flooring calculator", "flooring boxes calculator", "floor area calculator", "flooring cost"],
-  },
+  metadata: calculatorCatalogBySlug.flooring.metadata,
   fields: getFlooringFields("imperial"), fieldGroups: flooringFieldGroups,
   getFields: (input) => getFlooringFields(isFlooringUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
   updateInput, createInitialInput: () => ({ ...flooringDefaults }), validate, calculate, formatResult,

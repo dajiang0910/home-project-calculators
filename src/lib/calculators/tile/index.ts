@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { tileContent } from "../../../content/calculators/tile";
 import {
   getTileFields,
@@ -128,13 +129,7 @@ export function formatResult(result: TileResult): readonly ResultItem[] {
 
 export const tileCalculator: CalculatorDefinition<TileInput, TileResult> = {
   slug: "tile",
-  metadata: {
-    title: "Tile Calculator",
-    seoTitle: "Tile Calculator: Tiles, Boxes, Waste & Cost",
-    description: "Estimate the tiles and full boxes needed for a rectangular floor or wall, including waste and material cost.",
-    category: "flooring",
-    keywords: ["tile calculator", "tiles needed calculator", "tile boxes calculator", "tile cost calculator"],
-  },
+  metadata: calculatorCatalogBySlug.tile.metadata,
   fields: getTileFields("imperial"),
   fieldGroups: tileFieldGroups,
   getFields: (input) => getTileFields(isTileUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),

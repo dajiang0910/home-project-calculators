@@ -108,10 +108,26 @@
 .relatedCard p { margin-top: 4px; color: var(--hpc-color-text-secondary); font-size: 11px; line-height: 1.55; }
 .relatedCard :global(.badge) { margin-top: 8px; }
 
+.methodologyNote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  border-top: 1px solid var(--hpc-color-border);
+  padding-top: 20px;
+  color: var(--hpc-color-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.methodologyNote a { color: var(--hpc-color-brand); font-weight: 700; text-decoration: none; }
+.methodologyNote a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
 @media (min-width: 400px) { .container { padding-left: 20px; padding-right: 20px; } .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 640px) { .container { padding-left: 24px; padding-right: 24px; } .heroCopy { padding: 36px 28px; } .inputPanel, .resultPanel, .shoppingPanel { padding: 22px 20px; } .relatedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 768px) { .guide { margin-top: 48px; padding-top: 36px; } .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } .guideGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .container { padding-left: 32px; padding-right: 32px; } .workspace { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 20px; } .hero { min-height: 270px; margin-top: 18px; } .heroVisual { width: 42%; } .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .relatedGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1200px) { .fields { grid-template-columns: repeat(3, minmax(0, 1fr)); } .inputPanel { padding: 24px 20px; } .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 639px) { .heroVisual { display: none; } }
+@media (max-width: 639px) { .methodologyNote { align-items: flex-start; flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .control input, .control select { transition: none; } }

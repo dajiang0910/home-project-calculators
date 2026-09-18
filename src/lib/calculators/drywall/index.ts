@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { drywallContent } from "../../../content/calculators/drywall";
 import {
   drywallDefaults,
@@ -162,13 +163,7 @@ export function formatResult(result: DrywallResult): readonly ResultItem[] {
 
 export const drywallCalculator: CalculatorDefinition<DrywallInput, DrywallResult> = {
   slug: "drywall",
-  metadata: {
-    title: "Drywall Calculator",
-    seoTitle: "Drywall Calculator: Sheets, Waste & Cost",
-    description: "Estimate drywall sheets for rectangular walls and ceilings, subtract openings, add waste, and calculate sheet cost.",
-    category: "general",
-    keywords: ["drywall calculator", "drywall sheet calculator", "sheetrock calculator", "drywall cost calculator"],
-  },
+  metadata: calculatorCatalogBySlug.drywall.metadata,
   fields: getDrywallFields("imperial"),
   fieldGroups: drywallFieldGroups,
   getFields: (input) => getDrywallFields(isDrywallUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),

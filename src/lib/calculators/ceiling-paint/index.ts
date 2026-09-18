@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { ceilingPaintContent } from "../../../content/calculators/ceiling-paint";
 import {
   ceilingPaintDefaults,
@@ -127,13 +128,7 @@ export function formatResult(result: CeilingPaintResult): readonly ResultItem[] 
 
 export const ceilingPaintCalculator: CalculatorDefinition<CeilingPaintInput, CeilingPaintResult> = {
   slug: "ceiling-paint",
-  metadata: {
-    title: "Ceiling Paint Calculator",
-    seoTitle: "Ceiling Paint Calculator: How Much Paint Do I Need?",
-    description: "Estimate ceiling paint for a rectangular room. Account for coats, paint coverage, overhead waste, unit conversions, and the cost of whole gallons or liters.",
-    category: "painting",
-    keywords: ["ceiling paint calculator", "ceiling paint coverage", "how much paint for a ceiling", "ceiling paint cost calculator"],
-  },
+  metadata: calculatorCatalogBySlug["ceiling-paint"].metadata,
   fields: getCeilingPaintFields("imperial"),
   fieldGroups: ceilingPaintFieldGroups,
   getFields: (input) => getCeilingPaintFields(isCeilingPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),

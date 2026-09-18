@@ -25,3 +25,9 @@ Hero art is presentation-only and lives in `public/images/calculators/`; each pu
 The page is single column below 1024px, uses a form/results split from 1024px, and expands fields and metric cards to three columns at 1200px. Guide cards use one column below 640px, two columns from 640px, and three columns from 768px. All layouts must remain usable at 375px and at 200% zoom.
 
 The reference screenshot guides hierarchy, blue accent usage, compact bordered cards, and the unit toggle. Its example values and any unbacked shopping quantities are not product behavior; existing calculator contracts remain authoritative.
+
+## V2 discovery pages
+
+Homepage and discovery pages extend the same semantic tokens with an editorial planning-table direction: blueprint grid lines, large project imagery, dark navy planning bands, and lightweight divided lists. Search is the main hero interaction. Cards are reserved for calculator destinations with project imagery; category navigation and supporting content use rows and dividers.
+
+The root header is sticky and the expanded footer supplies calculator, category, methodology, and policy navigation. All public pages expose a `#main-content` target for the skip link. Motion is limited to the homepage hero entrance and destination hover feedback, and is disabled when reduced motion is requested.

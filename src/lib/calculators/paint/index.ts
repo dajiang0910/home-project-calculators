@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { paintContent } from "../../../content/calculators/paint";
 import { getPaintFields, paintDefaults, paintFieldGroups, paintNumericFields, paintShoppingList, type PaintInput } from "./config";
 import { convertPaintValue, isPaintUnitSystem, paintUnits, unitFactor, type PaintUnitSystem } from "./units";
@@ -133,13 +134,7 @@ export function formatResult(result: PaintResult): readonly ResultItem[] {
 
 export const paintCalculator: CalculatorDefinition<PaintInput, PaintResult> = {
   slug: "paint",
-  metadata: {
-    title: "Paint Calculator",
-    seoTitle: "Paint Calculator: How Much Paint Do I Need?",
-    description: "Estimate paint for your room in gallons or liters. Account for doors, windows, coats, and waste, then see how much to buy and the estimated paint cost.",
-    category: "painting",
-    keywords: ["paint calculator", "paint coverage calculator", "how much paint do I need", "room paint calculator"],
-  },
+  metadata: calculatorCatalogBySlug.paint.metadata,
   fields: getPaintFields("imperial"),
   fieldGroups: paintFieldGroups,
   getFields: (input) => getPaintFields(isPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),

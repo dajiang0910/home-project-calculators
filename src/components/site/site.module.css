@@ -1,6 +1,10 @@
 .header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
   border-bottom: 1px solid var(--hpc-color-border);
-  background: var(--hpc-color-surface);
+  background: rgb(255 255 255 / 94%);
+  backdrop-filter: blur(14px);
 }
 
 .headerInner {
@@ -66,11 +70,11 @@
 .nav details[open] summary::after { transform: translateY(-1px) rotate(225deg); }
 .menu {
   position: absolute;
-  z-index: 2;
+  z-index: 30;
   top: calc(100% + 10px);
   right: 0;
   display: grid;
-  min-width: 190px;
+  min-width: 230px;
   gap: 4px;
   padding: 8px;
   border: 1px solid var(--hpc-color-border);
@@ -80,6 +84,16 @@
 }
 .menu a { padding: 8px; border-radius: 4px; }
 .menu a:hover { background: var(--hpc-color-brand-soft); }
+.menu .menuAll {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--hpc-color-border);
+  border-radius: 0;
+  color: var(--hpc-color-brand);
+  padding-bottom: 11px;
+}
 
 .breadcrumb {
   display: flex;
@@ -93,26 +107,60 @@
 }
 .breadcrumb a { color: var(--hpc-color-brand); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.breadcrumbItem { display: inline-flex; align-items: center; gap: 7px; }
 .separator { color: #9aabc0; }
 
 .footer {
   border-top: 1px solid var(--hpc-color-border);
-  background: var(--hpc-color-surface);
+  background: #102947;
   color: var(--hpc-color-text-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
-.footerInner { max-width: var(--hpc-page-max-width); margin: 0 auto; padding: 22px 16px; }
+.footerInner {
+  display: grid;
+  max-width: var(--hpc-page-max-width);
+  gap: 30px;
+  margin: 0 auto;
+  padding: 42px 16px 34px;
+}
+.footerBrand { display: flex; gap: 12px; align-items: flex-start; }
+.footerBrand p, .footerColumn p { color: #fff; font-weight: 700; }
+.footerBrand span, .footerColumn a { color: #b9cbe0; }
+.footerBrand > div > span { display: block; max-width: 250px; margin-top: 6px; line-height: 1.6; }
+.footerMark {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hpc-color-brand) !important;
+  font-size: 12px;
+  font-weight: 800;
+}
+.footerColumn { display: grid; align-content: start; gap: 10px; }
+.footerColumn p { margin-bottom: 3px; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+.footerColumn a { width: fit-content; text-decoration: none; }
+.footerColumn a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.footerBottom { max-width: var(--hpc-page-max-width); margin: 0 auto; border-top: 1px solid rgb(255 255 255 / 12%); color: #8fa8c2; padding: 18px 16px 24px; font-size: 11px; }
 
 @media (min-width: 760px) {
-  .headerInner, .breadcrumb { padding-left: 24px; padding-right: 24px; }
+  .headerInner, .breadcrumb, .footerBottom { padding-left: 24px; padding-right: 24px; }
+  .footerInner { grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(130px, 1fr)); padding-left: 24px; padding-right: 24px; }
 }
 
 @media (min-width: 1024px) {
-  .headerInner, .breadcrumb { padding-left: 32px; padding-right: 32px; }
+  .headerInner, .breadcrumb, .footerInner, .footerBottom { padding-left: 32px; padding-right: 32px; }
 }
 
 @media (max-width: 639px) {
   .tagline { display: none; }
   .nav { gap: 12px; }
   .nav > a:first-child { display: none; }
+  .methodologyLink { display: none; }
+  .brandName { font-size: 14px; }
+  .footerInner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footerBrand { grid-column: 1 / -1; }
 }

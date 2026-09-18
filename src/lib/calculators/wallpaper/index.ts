@@ -1,4 +1,5 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { calculatorCatalogBySlug } from "../catalog";
 import { wallpaperContent } from "../../../content/calculators/wallpaper";
 import {
   getWallpaperFields,
@@ -172,13 +173,7 @@ export function formatResult(result: WallpaperResult): readonly ResultItem[] {
 
 export const wallpaperCalculator: CalculatorDefinition<WallpaperInput, WallpaperResult> = {
   slug: "wallpaper",
-  metadata: {
-    title: "Wallpaper Calculator",
-    seoTitle: "Wallpaper Calculator: Rolls, Pattern Repeat & Cost",
-    description: "Estimate wallpaper rolls for a rectangular room, including doors, windows, pattern repeat, waste, and material cost.",
-    category: "general",
-    keywords: ["wallpaper calculator", "wallpaper roll calculator", "how much wallpaper do I need", "wallpaper cost calculator"],
-  },
+  metadata: calculatorCatalogBySlug.wallpaper.metadata,
   fields: getWallpaperFields("imperial"),
   fieldGroups: wallpaperFieldGroups,
   getFields: (input) => getWallpaperFields(isWallpaperUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
