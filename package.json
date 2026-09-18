@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "tsc -p tsconfig.test.json && node --test .test-build",
+    "test": "node scripts/run-domain-tests.mjs",
     "test:e2e": "playwright test",
     "dev:vinext": "vinext dev --port 3001",
     "build:vinext": "vinext build",
