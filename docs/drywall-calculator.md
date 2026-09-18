@@ -8,7 +8,7 @@ Defaults: US / Imperial, walls plus ceiling, a 12 × 10 ft room with 8 ft walls,
 
 Metric mode uses meters and m². Switching converts room, sheet, door, and window dimensions with 1 ft = 0.3048 m, limiting editable converted values to six decimal places. Counts, project selection, waste, and USD price per sheet stay unchanged.
 
-Room and opening dimensions accept 0.01–1,000 ft and sheet dimensions accept 0.1–100 ft, with equivalent metric limits. Door and window counts accept whole numbers from 0–10,000, waste accepts 0–100%, and price accepts $0–100,000 per sheet. Required inputs reject blanks, malformed numbers, booleans, non-finite values, and out-of-range values. Invalid text survives unit switches. Direct invalid calculations throw `RangeError`.
+Room and opening dimensions accept 0.01–1,000 ft and sheet dimensions accept 0.1–100 ft, with equivalent metric limits. Door and window counts accept whole numbers from 0–10,000, waste accepts 0–100%, and price accepts $0–100,000 per sheet. Required active inputs reject blanks, malformed numbers, booleans, non-finite values, and out-of-range values. Ceiling-only mode hides and ignores wall height and all opening inputs; a zero door or window count hides and ignores that opening type's dimensions. Invalid text survives unit switches. Direct invalid calculations throw `RangeError`.
 
 ## Calculation and rounding
 

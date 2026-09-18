@@ -24,7 +24,7 @@ export function CalculatorForm({ slug, fields, fieldGroups, input, errors, expan
         <span className={styles.formHint}>Updates as you type</span>
       </div>
       <div className={styles.unitSettings}>{fields.filter((field) => !field.group).map((field) => <FormField key={field.name} slug={slug} field={field} input={input} errors={errors} onChange={onChange} />)}</div>
-      {fieldGroups?.map((group) => <FormSection key={group.id} slug={slug} group={group} fields={fields.filter((field) => field.group === group.id)} input={input} errors={errors} expanded={expandedGroups[group.id]} onToggle={(open) => onToggle(group.id, open)} onChange={onChange} />)}
+      {fieldGroups?.filter((group) => fields.some((field) => field.group === group.id)).map((group) => <FormSection key={group.id} slug={slug} group={group} fields={fields.filter((field) => field.group === group.id)} input={input} errors={errors} expanded={expandedGroups[group.id]} onToggle={(open) => onToggle(group.id, open)} onChange={onChange} />)}
       <PrimaryButton type="submit" className={styles.submitButton}>View results <span aria-hidden="true">→</span></PrimaryButton>
       <p className={styles.liveHint}>Your estimate updates automatically as you type.</p>
     </form>

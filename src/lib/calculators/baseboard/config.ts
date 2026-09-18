@@ -1,4 +1,5 @@
-import type { CalculatorField, CalculatorFieldGroup, ShoppingListItem } from "../types";
+import { parseFiniteNumber } from "../numeric";
+import type { CalculatorField, CalculatorFieldGroup, CalculatorFormInput, ShoppingListItem } from "../types";
 
 export type BaseboardUnitSystem = "imperial" | "metric";
 
@@ -60,7 +61,11 @@ export const baseboardFieldGroups: readonly CalculatorFieldGroup[] = [
   { id: "openings", title: "Door openings", description: "Doorways interrupt the baseboard run. Defaults: one 3 ft opening. Set the count to zero when there are no doors.", collapsible: true },
 ];
 
-export function getBaseboardFields(system: BaseboardUnitSystem): readonly CalculatorField[] {
+export function isBaseboardNumericFieldActive(name: Exclude<keyof BaseboardInput, "unitSystem">, input?: CalculatorFormInput): boolean {
+  return !input || name !== "doorWidth" || parseFiniteNumber(input.doors) !== 0;
+}
+
+export function getBaseboardFields(system: BaseboardUnitSystem, input?: CalculatorFormInput): readonly CalculatorField[] {
   const units = baseboardUnits[system];
   return [
     {
@@ -74,7 +79,7 @@ export function getBaseboardFields(system: BaseboardUnitSystem): readonly Calcul
         { value: "metric", label: "Metric — m" },
       ],
     },
-    ...baseboardNumericFields.map((field): CalculatorField => {
+    ...baseboardNumericFields.filter((field) => isBaseboardNumericFieldActive(field.name, input)).map((field): CalculatorField => {
       const factor = field.length ? units.lengthFactor : 1;
       return {
         name: field.name,

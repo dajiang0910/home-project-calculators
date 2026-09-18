@@ -27,7 +27,7 @@ test("wallpaper reference: 25 strips, 3 per roll, 9 rolls, and $360", () => {
   assert.deepEqual(formatResult(result).map(({ label, value }) => [label, value]), [
     ["Rolls Needed", "9 rolls"],
     ["Estimated Cost", "$360.00"],
-    ["Full-height Strips", "25 strips"],
+    ["Area-based Strip Estimate", "25 strips"],
     ["Net Wall Area", "307 sq ft"],
     ["Adjusted Drop", "8.54 ft"],
     ["Strips per Roll", "3 strips"],
@@ -43,6 +43,24 @@ test("pattern repeat changes drops per roll and whole-roll purchase", () => {
   assert.equal(noRepeat.adjustedDropLength, 8);
   assert.equal(noRepeat.stripsPerRoll, 4);
   assert.equal(noRepeat.rollsNeeded, 7);
+});
+
+test("zero opening counts ignore and hide their unused dimensions", () => {
+  const raw = {
+    ...wallpaperDefaults,
+    doors: 0,
+    windows: 0,
+    doorWidth: "",
+    doorHeight: "",
+    windowWidth: "",
+    windowHeight: "",
+  };
+  const checked = validate(raw);
+  assert.ok(checked.valid);
+  assert.equal(calculate(checked.value).openingArea, 0);
+  const fieldNames = wallpaperCalculator.getFields?.(raw).map((field) => field.name);
+  assert.ok(!fieldNames?.includes("doorWidth"));
+  assert.ok(!fieldNames?.includes("windowHeight"));
 });
 
 test("waste applies once and strip and roll purchases round at real boundaries", () => {

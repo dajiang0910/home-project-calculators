@@ -1,6 +1,6 @@
 # Wallpaper Calculator
 
-Published at `/calculators/wallpaper` through the shared registry-driven route. It estimates full-height strips and purchasable wallpaper rolls for four walls of one rectangular room, using the existing calculator form, result, shopping-list, and guide components.
+Published at `/calculators/wallpaper` through the shared registry-driven route. It produces an area-based estimate of full-height strips and purchasable wallpaper rolls for four walls of one rectangular room, using the existing calculator form, result, shopping-list, and guide components.
 
 ## Inputs and units
 
@@ -8,7 +8,7 @@ Defaults: US / Imperial, a 12 × 10 ft room with 8 ft walls, one 3 × 7 ft door,
 
 Metric mode uses meters for room and roll length, centimeters for roll width and pattern repeat, and m² for areas. Switching converts room and opening dimensions with 1 ft = 0.3048 m and roll width/repeat with 1 in = 2.54 cm. Editable converted values are limited to six decimal places. Counts, waste, and USD price per roll stay unchanged.
 
-Room and opening dimensions accept 0.01–1,000 ft; roll length accepts 0.1–1,000 ft; roll width accepts 0.1–120 in; pattern repeat accepts 0–120 in, with equivalent metric limits. Door and window counts accept whole numbers from 0–10,000, extra waste accepts 0–100%, and price accepts $0–100,000 per roll. Required inputs reject blanks, malformed numbers, booleans, non-finite values, and out-of-range values. Invalid text survives unit switches. A roll too short for one adjusted drop is rejected. Direct invalid calculations throw `RangeError`.
+Room and opening dimensions accept 0.01–1,000 ft; roll length accepts 0.1–1,000 ft; roll width accepts 0.1–120 in; pattern repeat accepts 0–120 in, with equivalent metric limits. Door and window counts accept whole numbers from 0–10,000, extra waste accepts 0–100%, and price accepts $0–100,000 per roll. Required active inputs reject blanks, malformed numbers, booleans, non-finite values, and out-of-range values. When an opening count is zero, its unused size fields are hidden and do not block calculation. Invalid text survives unit switches. A roll too short for one adjusted drop is rejected. Direct invalid calculations throw `RangeError`.
 
 ## Calculation and rounding
 
@@ -17,7 +17,7 @@ Room and opening dimensions accept 0.01–1,000 ft; roll length accepts 0.1–1,
 - Adjusted drop = wall height rounded upward to a whole vertical pattern repeat; with zero repeat it equals wall height.
 - Strips per roll = floor(roll length ÷ adjusted drop).
 - Area with extra waste = net wall area × (1 + waste ÷ 100).
-- Full-height strips = ceiling(area with extra waste ÷ (roll width × wall height)).
+- Area-based full-height strip estimate = ceiling(area with extra waste ÷ (roll width × wall height)).
 - Rolls needed = ceiling(full-height strips ÷ strips per roll).
 - Estimated cost = rolls needed × price per roll.
 
@@ -27,7 +27,7 @@ Reference: a 12 × 10 × 8 ft room has 352 sq ft of walls. One door and two wind
 
 ## Product boundaries
 
-This is a planning estimate, not a wall-by-wall hanging plan. It models vertical repeat but not straight, drop, half-drop, or random match offsets; starting position; opening placement; partial-strip reuse; irregular walls; sloped ceilings; murals; print-batch availability; labor; delivery; or tax. Retail terms such as single roll and double roll vary, so inputs must use the physical width, total length, and price of the package being purchased.
+This is an area-based planning estimate, not a wall-by-wall hanging plan. Subtracting doors and windows assumes their area can be reused efficiently, but opening placement and pattern matching may prevent those offcuts from replacing full-width strips. Order conservatively when that assumption is doubtful. The model includes vertical repeat but not straight, drop, half-drop, or random match offsets; starting position; irregular walls; sloped ceilings; murals; print-batch availability; labor; delivery; or tax. Retail terms such as single roll and double roll vary, so inputs must use the physical width, total length, and price of the package being purchased.
 
 Shopping recommendations include Wallpaper, Wall Primer or Sizing, Wallpaper Adhesive, Smoothing Tool, Seam Roller, and Cutting & Layout Tools. Only wallpaper rolls are priced.
 

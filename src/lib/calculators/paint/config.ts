@@ -1,4 +1,5 @@
-import type { CalculatorField, CalculatorFieldGroup, ShoppingListItem } from "../types";
+import { parseFiniteNumber } from "../numeric";
+import type { CalculatorField, CalculatorFieldGroup, CalculatorFormInput, ShoppingListItem } from "../types";
 import { paintUnits, unitFactor, type PaintQuantity, type PaintUnitSystem } from "./units";
 
 export type PaintInput = {
@@ -57,12 +58,19 @@ export const paintFieldGroups: readonly CalculatorFieldGroup[] = [
   { id: "openings", title: "Door & window sizes", description: "Defaults: doors 3 × 7 ft (0.9144 × 2.1336 m); windows 3 × 4 ft (0.9144 × 1.2192 m). Edit the average size of each type below.", collapsible: true },
 ];
 
-export function getPaintFields(system: PaintUnitSystem): readonly CalculatorField[] {
+export function isPaintNumericFieldActive(name: Exclude<keyof PaintInput, "unitSystem">, input?: CalculatorFormInput): boolean {
+  if (!input) return true;
+  if (["doorWidth", "doorHeight"].includes(name) && parseFiniteNumber(input.doors) === 0) return false;
+  if (["windowWidth", "windowHeight"].includes(name) && parseFiniteNumber(input.windows) === 0) return false;
+  return true;
+}
+
+export function getPaintFields(system: PaintUnitSystem, input?: CalculatorFormInput): readonly CalculatorField[] {
   const units = paintUnits[system];
   return [{ name: "unitSystem", label: "Unit System", type: "select", required: true,
     description: "Switching converts your measurements, coverage, and price. Purchases round up to whole gallons or liters.",
     options: [{ value: "imperial", label: "US / Imperial — ft, gal" }, { value: "metric", label: "Metric — m, L" }],
-  }, ...paintNumericFields.map((field): CalculatorField => {
+  }, ...paintNumericFields.filter((field) => isPaintNumericFieldActive(field.name, input)).map((field): CalculatorField => {
     const factor = field.quantity ? unitFactor(system, field.quantity) : 1;
     return {
       name: field.name, label: field.name === "pricePerUnit" && system === "metric" ? "Price per Liter" : field.label,

@@ -46,6 +46,24 @@ test("zero openings, editable sizes, and no waste", () => {
   assert.equal(zero.windowArea, 0);
 });
 
+test("zero opening counts ignore and hide their unused dimensions", () => {
+  const raw = {
+    ...paintDefaults,
+    doors: 0,
+    windows: 0,
+    doorWidth: "",
+    doorHeight: "",
+    windowWidth: "",
+    windowHeight: "",
+  };
+  const checked = validate(raw);
+  assert.ok(checked.valid);
+  assert.equal(calculate(checked.value).paintableArea, 416);
+  const fieldNames = paintCalculator.getFields?.(raw).map((field) => field.name);
+  assert.ok(!fieldNames?.includes("doorWidth"));
+  assert.ok(!fieldNames?.includes("windowHeight"));
+});
+
 test("waste is applied once before rounding; cost uses the purchased amount", () => {
   const input = { ...paintDefaults, roomLength: 10, roomWidth: 10, wallHeight: 10, doors: 0, windows: 0, coats: 1, coverage: 200, waste: 0 };
   assert.equal(calculate(input).recommendedPurchase, 2);

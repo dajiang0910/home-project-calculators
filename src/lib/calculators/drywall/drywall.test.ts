@@ -46,6 +46,46 @@ test("project modes include the requested surfaces and deduct openings only from
   assert.equal(calculate({ ...drywallDefaults, projectType: "walls", doors: 0, windows: 0, waste: 0 }).drywallArea, 352);
 });
 
+test("ceiling-only projects ignore and hide wall and opening inputs", () => {
+  const raw = {
+    ...drywallDefaults,
+    projectType: "ceiling" as const,
+    wallHeight: "",
+    doors: "",
+    windows: "",
+    doorWidth: "",
+    doorHeight: "",
+    windowWidth: "",
+    windowHeight: "",
+  };
+  const checked = validate(raw);
+  assert.ok(checked.valid);
+  assert.equal(calculate(checked.value).drywallArea, 120);
+  assert.deepEqual(
+    drywallCalculator.getFields?.(raw).map((field) => field.name),
+    ["unitSystem", "projectType", "roomLength", "roomWidth", "sheetLength", "sheetWidth", "waste", "pricePerSheet"],
+  );
+});
+
+test("zero opening counts ignore and hide their unused dimensions", () => {
+  const raw = {
+    ...drywallDefaults,
+    projectType: "walls" as const,
+    doors: 0,
+    windows: 0,
+    doorWidth: "",
+    doorHeight: "",
+    windowWidth: "",
+    windowHeight: "",
+  };
+  const checked = validate(raw);
+  assert.ok(checked.valid);
+  assert.equal(calculate(checked.value).openingArea, 0);
+  const fieldNames = drywallCalculator.getFields?.(raw).map((field) => field.name);
+  assert.ok(!fieldNames?.includes("doorWidth"));
+  assert.ok(!fieldNames?.includes("windowHeight"));
+});
+
 test("waste applies once, sheets round up at real boundaries, and cost prices full sheets", () => {
   const base = { ...drywallDefaults, projectType: "ceiling" as const, roomLength: 8, roomWidth: 8, sheetLength: 8, sheetWidth: 4, waste: 0 };
   assert.equal(calculate(base).sheetsNeeded, 2);

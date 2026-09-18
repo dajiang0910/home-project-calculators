@@ -41,6 +41,14 @@ test("waste and full-piece rounding apply at real boundaries", () => {
   assert.equal(calculate({ ...base, pricePerBoard: 0 }).estimatedCost, 0);
 });
 
+test("zero doors ignore and hide the unused opening width", () => {
+  const raw = { ...baseboardDefaults, doors: 0, doorWidth: "" };
+  const checked = validate(raw);
+  assert.ok(checked.valid);
+  assert.equal(calculate(checked.value).openingLength, 0);
+  assert.ok(!baseboardCalculator.getFields?.(raw).some((field) => field.name === "doorWidth"));
+});
+
 test("direct metric input calculates metric run lengths and pieces", () => {
   const result = calculate({
     ...baseboardDefaults,

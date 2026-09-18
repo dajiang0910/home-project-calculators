@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, floorWholeCapacity, parseFiniteNumber } from "../numeric";
 import { wallpaperContent } from "../../../content/calculators/wallpaper";
 import {
   getWallpaperFields,
@@ -27,36 +28,17 @@ export type WallpaperResult = {
   waste: number;
 };
 
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
-function tolerance(value: number): number {
-  return 8 * Number.EPSILON * Math.max(1, Math.abs(value));
-}
-
-function ceilCount(value: number): number {
-  return Math.max(1, Math.ceil(value - tolerance(value)));
-}
-
-function floorCount(value: number): number {
-  return Math.floor(value + tolerance(value));
-}
-
 function rollPlan(input: WallpaperInput) {
   const units = wallpaperUnits[input.unitSystem];
   const rollWidth = input.rollWidth / units.smallLengthDivisor;
   const patternRepeat = input.patternRepeat / units.smallLengthDivisor;
   const adjustedDropLength = patternRepeat === 0
     ? input.wallHeight
-    : ceilCount(input.wallHeight / patternRepeat) * patternRepeat;
+    : ceilWholePurchase(input.wallHeight / patternRepeat) * patternRepeat;
   return {
     rollWidth,
     adjustedDropLength,
-    stripsPerRoll: floorCount(input.rollLength / adjustedDropLength),
+    stripsPerRoll: floorWholeCapacity(input.rollLength / adjustedDropLength),
   };
 }
 
@@ -78,9 +60,9 @@ export function validate(input: unknown): ValidationResult<WallpaperInput> {
 
   const errors: Record<string, string> = {};
   const parsed: Record<string, number> = {};
-  for (const field of getWallpaperFields(raw.unitSystem)) {
+  for (const field of getWallpaperFields(raw.unitSystem, raw)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -97,7 +79,7 @@ export function validate(input: unknown): ValidationResult<WallpaperInput> {
   }
   if (Object.keys(errors).length) return { valid: false, errors };
 
-  const value = { ...parsed, unitSystem: raw.unitSystem } as WallpaperInput;
+  const value = { ...wallpaperDefaults, ...parsed, unitSystem: raw.unitSystem } as WallpaperInput;
   const { grossWallArea, openingArea } = wallAreas(value);
   if (openingArea > grossWallArea) {
     return { valid: false, errors: { doors: "Door and window area exceeds the wall area. Check the room dimensions, opening counts, and opening sizes." } };
@@ -121,7 +103,7 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const to = wallpaperUnits[value];
   for (const field of wallpaperNumericFields) {
     if (!field.quantity) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric === undefined) continue;
     const factor = `${field.quantity}Factor` as const;
     const next = numeric * (to[factor] / from[factor]);
@@ -139,8 +121,8 @@ export function calculate(input: WallpaperInput): WallpaperResult {
   const requiredAreaWithWaste = netWallArea * (1 + values.waste / 100);
   const plan = rollPlan(values);
   const stripCoverage = plan.rollWidth * values.wallHeight;
-  const stripsNeeded = requiredAreaWithWaste === 0 ? 0 : ceilCount(requiredAreaWithWaste / stripCoverage);
-  const rollsNeeded = stripsNeeded === 0 ? 0 : ceilCount(stripsNeeded / plan.stripsPerRoll);
+  const stripsNeeded = ceilWholePurchase(requiredAreaWithWaste / stripCoverage);
+  const rollsNeeded = ceilWholePurchase(stripsNeeded / plan.stripsPerRoll);
   return {
     unitSystem: values.unitSystem,
     grossWallArea,
@@ -164,7 +146,7 @@ export function formatResult(result: WallpaperResult): readonly ResultItem[] {
   return [
     { label: "Rolls Needed", value: `${result.rollsNeeded.toLocaleString("en-US")} ${result.rollsNeeded === 1 ? "roll" : "rolls"}`, detail: `Allows for pattern repeat and ${number.format(result.waste)}% extra waste.`, emphasis: true },
     { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Wallpaper rolls only · before tax and installation supplies", emphasis: true },
-    { label: "Full-height Strips", value: `${result.stripsNeeded.toLocaleString("en-US")} ${result.stripsNeeded === 1 ? "strip" : "strips"}`, detail: "Rounded up before rolls are calculated." },
+    { label: "Area-based Strip Estimate", value: `${result.stripsNeeded.toLocaleString("en-US")} ${result.stripsNeeded === 1 ? "strip" : "strips"}`, detail: "Opening area is treated as reusable material; actual strip reuse depends on opening placement and layout." },
     { label: "Net Wall Area", value: `${number.format(result.netWallArea)} ${units.area}`, detail: "Four walls minus doors and windows." },
     { label: "Adjusted Drop", value: `${number.format(result.adjustedDropLength)} ${units.roomLength}`, detail: "Wall height rounded to the next full pattern repeat." },
     { label: "Strips per Roll", value: `${result.stripsPerRoll.toLocaleString("en-US")} ${result.stripsPerRoll === 1 ? "strip" : "strips"}` },
@@ -176,13 +158,13 @@ export const wallpaperCalculator: CalculatorDefinition<WallpaperInput, Wallpaper
   metadata: calculatorCatalogBySlug.wallpaper.metadata,
   fields: getWallpaperFields("imperial"),
   fieldGroups: wallpaperFieldGroups,
-  getFields: (input) => getWallpaperFields(isWallpaperUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
+  getFields: (input) => getWallpaperFields(isWallpaperUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
   updateInput,
   createInitialInput: () => ({ ...wallpaperDefaults }),
   validate,
   calculate,
   formatResult,
   shoppingList: wallpaperShoppingList,
-  resultNote: "Planning estimate for four walls of one rectangular room. Pattern match type, starting position, opening placement, partial-strip reuse, wall irregularities, print batch, labor, delivery, and tax are not modeled. Confirm the physical roll dimensions and repeat on the product label before buying.",
+  resultNote: "Area-based planning estimate for four walls of one rectangular room. Deducted opening area may not translate into reusable full-width strips, so order conservatively when opening placement or pattern matching limits offcut reuse. Starting position, wall irregularities, print batch, labor, delivery, and tax are not modeled. Confirm the physical roll dimensions and repeat on the product label before buying.",
   content: wallpaperContent,
 };

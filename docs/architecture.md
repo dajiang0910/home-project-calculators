@@ -26,7 +26,9 @@ Validation returns either a typed value or a map of field names to English messa
 
 Phase two evaluates immediately on initial render and every input change. Form state retains raw numeric strings, including empty strings. `validate` accepts unknown input and returns a parsed domain value. Domain methods retain their generic input/result types; the registry erases those types at the lookup boundary, so consumers must keep validation, calculation, and formatting paired with the same definition.
 
-Optional field groups and numeric bounds describe form presentation. `getFields(input)` resolves unit-dependent labels and bounds; `updateInput(input, name, value)` owns domain transformations such as unit conversion. The shared client only dispatches changes. `ResultItem.emphasis`, static shopping recommendations, and result notes supply presentation data without embedding formulas in React. No second unit or openings system was introduced: Paint owns its conversions and average opening sizes because phase one had neither abstraction.
+Optional field groups and numeric bounds describe form presentation. `getFields(input)` resolves unit-dependent labels and bounds and omits fields that do not participate in the selected calculation. Validation follows the same conditions and fills inactive domain properties from safe defaults, so a hidden stale value cannot block an estimate or enter a formula. `updateInput(input, name, value)` owns domain transformations such as unit conversion. The shared client only dispatches changes. `ResultItem.emphasis`, static shopping recommendations, and result notes supply presentation data without embedding formulas in React.
+
+Strict finite-number parsing and machine-epsilon-aware whole-package rounding live in `src/lib/calculators/numeric.ts`. Calculator modules retain their own bounds, error messages, conversions, and formulas; the shared helpers contain no domain policy.
 
 Educational content lives in `src/content/calculators/` and is referenced by the definition. The dynamic route renders `CalculatorGuide` on the server and passes it through the client as a child slot. Related links are enabled only for published registry entries. Shared calculator CSS is scoped to a module; the starter homepage and global layout are unchanged.
 
@@ -42,6 +44,7 @@ Visual values are centralized in `src/styles/tokens.css`, imported by `app/globa
 - Keep shared components generic and free of domain terminology.
 - Use stable slugs and avoid route-specific imports in formulas.
 - Add contract tests before registering every definition. `npm test` compiles the pure TypeScript domain modules with the existing compiler and runs Node's built-in test runner; no testing framework dependency is needed.
+- Keep every published slug in the explicit calculator presentation map. The map is exhaustively typed from the registry, and a missing presentation throws instead of silently borrowing another calculator's hero.
 - Introduce a runtime schema library only when shared form generation requires it; the initial framework uses TypeScript plus calculator-owned validation.
 
 ## V2 discovery and SEO foundation
@@ -50,6 +53,8 @@ Visual values are centralized in `src/styles/tokens.css`, imported by `app/globa
 
 The public discovery path is `Home → /calculators → /calculators/categories/[category] → /calculators/[slug]`. Category hubs live under `/calculators/categories/` because the stable calculator slug `/calculators/flooring` would otherwise conflict with a Flooring category page. Only categories with at least one published calculator are statically generated and included in the sitemap. Planned categories remain catalog data until a tested calculator makes the hub useful.
 
-Root layout metadata, canonical URLs, sitemap, robots, and structured data use `src/lib/seo/`. Set `NEXT_PUBLIC_SITE_URL` to the deployed origin; local development falls back to `http://localhost:3000`. The homepage emits `WebSite` and `Organization` JSON-LD. Calculator, directory, and category pages emit `BreadcrumbList` JSON-LD.
+Root layout metadata, canonical URLs, sitemap, robots, and structured data use `src/lib/seo/`. Set `NEXT_PUBLIC_SITE_URL` to the deployed HTTP(S) origin. Production builds fail when it is missing or invalid; development and tests fall back to `http://localhost:3000`. The homepage emits `WebSite` and `Organization` JSON-LD. Calculator, directory, and category pages emit `BreadcrumbList` JSON-LD.
+
+`.github/workflows/ci.yml` runs install, lint, domain/contract tests, and a production build for pull requests and pushes to `main`. Its build-only site origin is explicit so the same production URL validation runs in CI.
 
 The root layout owns the shared `SiteHeader` and `SiteFooter`. Calculator pages retain their registry-driven dynamic route and shared calculator composition without duplicating global site chrome.

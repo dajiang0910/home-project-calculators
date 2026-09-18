@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
 import { ceilingPaintContent } from "../../../content/calculators/ceiling-paint";
 import {
   ceilingPaintDefaults,
@@ -26,13 +27,6 @@ export type CeilingPaintResult = {
   waste: number;
 };
 
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
 export function validate(input: unknown): ValidationResult<CeilingPaintInput> {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     return { valid: false, errors: { form: "Enter your ceiling and paint details to calculate an estimate." } };
@@ -46,7 +40,7 @@ export function validate(input: unknown): ValidationResult<CeilingPaintInput> {
   const parsed: Record<string, number> = {};
   for (const field of getCeilingPaintFields(raw.unitSystem)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -74,7 +68,7 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const converted: Record<string, unknown> = { ...input, unitSystem: value };
   for (const field of ceilingPaintNumericFields) {
     if (!field.quantity) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric === undefined) continue;
     const next = convertCeilingPaintValue(numeric, field.quantity, input.unitSystem, value);
     if (Number.isFinite(next)) {
@@ -84,11 +78,6 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   return converted;
 }
 
-function roundPurchase(value: number): number {
-  const tolerance = 8 * Number.EPSILON * Math.max(1, value);
-  return value === 0 ? 0 : Math.max(1, Math.ceil(value - tolerance));
-}
-
 export function calculate(input: CeilingPaintInput): CeilingPaintResult {
   const validation = validate(input);
   if (!validation.valid) throw new RangeError(Object.values(validation.errors).join(" "));
@@ -96,7 +85,7 @@ export function calculate(input: CeilingPaintInput): CeilingPaintResult {
   const ceilingArea = values.roomLength * values.roomWidth;
   const totalCoverageArea = ceilingArea * values.coats;
   const paintNeeded = totalCoverageArea / values.coverage * (1 + values.waste / 100);
-  const recommendedPurchase = roundPurchase(paintNeeded / ceilingPaintUnits[values.unitSystem].purchaseIncrement)
+  const recommendedPurchase = ceilWholePurchase(paintNeeded / ceilingPaintUnits[values.unitSystem].purchaseIncrement)
     * ceilingPaintUnits[values.unitSystem].purchaseIncrement;
   return {
     unitSystem: values.unitSystem,

@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
 import { tileContent } from "../../../content/calculators/tile";
 import {
   getTileFields,
@@ -25,13 +26,6 @@ export type TileResult = {
   waste: number;
 };
 
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
 export function validate(input: unknown): ValidationResult<TileInput> {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     return { valid: false, errors: { form: "Enter your surface and tile measurements to calculate an estimate." } };
@@ -45,7 +39,7 @@ export function validate(input: unknown): ValidationResult<TileInput> {
   const parsed: Record<string, number> = {};
   for (const field of getTileFields(raw.unitSystem)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -75,18 +69,13 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const to = tileUnits[value];
   for (const field of tileNumericFields) {
     if (!field.quantity) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric === undefined) continue;
     const factor = `${field.quantity}Factor` as const;
     const next = numeric * (to[factor] / from[factor]);
     if (Number.isFinite(next)) converted[field.name] = Number(next.toFixed(6));
   }
   return converted;
-}
-
-function ceilPurchase(value: number): number {
-  const tolerance = 8 * Number.EPSILON * Math.max(1, value);
-  return Math.max(1, Math.ceil(value - tolerance));
 }
 
 export function calculate(input: TileInput): TileResult {
@@ -97,8 +86,8 @@ export function calculate(input: TileInput): TileResult {
   const surfaceArea = values.roomLength * values.roomWidth;
   const tileArea = values.tileLength * values.tileWidth / units.tileAreaDivisor;
   const exactTileCount = surfaceArea / tileArea;
-  const tilesNeeded = ceilPurchase(exactTileCount * (1 + values.waste / 100));
-  const boxesNeeded = ceilPurchase(tilesNeeded / values.tilesPerBox);
+  const tilesNeeded = ceilWholePurchase(exactTileCount * (1 + values.waste / 100));
+  const boxesNeeded = ceilWholePurchase(tilesNeeded / values.tilesPerBox);
   const tilesPurchased = boxesNeeded * values.tilesPerBox;
   return {
     unitSystem: values.unitSystem,

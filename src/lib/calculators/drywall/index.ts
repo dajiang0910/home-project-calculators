@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
 import { drywallContent } from "../../../content/calculators/drywall";
 import {
   drywallDefaults,
@@ -30,13 +31,6 @@ export type DrywallResult = {
   waste: number;
 };
 
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
 function includesWalls(projectType: DrywallProjectType): boolean {
   return projectType === "walls" || projectType === "walls-ceiling";
 }
@@ -66,9 +60,9 @@ export function validate(input: unknown): ValidationResult<DrywallInput> {
 
   const errors: Record<string, string> = {};
   const parsed: Record<string, number> = {};
-  for (const field of getDrywallFields(raw.unitSystem)) {
+  for (const field of getDrywallFields(raw.unitSystem, raw)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -85,7 +79,7 @@ export function validate(input: unknown): ValidationResult<DrywallInput> {
   }
   if (Object.keys(errors).length) return { valid: false, errors };
 
-  const value = { ...parsed, unitSystem: raw.unitSystem, projectType: raw.projectType } as DrywallInput;
+  const value = { ...drywallDefaults, ...parsed, unitSystem: raw.unitSystem, projectType: raw.projectType } as DrywallInput;
   if (includesWalls(value.projectType)) {
     const { grossWallArea, openingArea } = wallAndOpeningAreas(value);
     if (openingArea > grossWallArea) {
@@ -105,17 +99,12 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const factor = drywallUnits[value].lengthFactor / drywallUnits[input.unitSystem].lengthFactor;
   for (const field of drywallNumericFields) {
     if (!field.length) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric === undefined) continue;
     const next = numeric * factor;
     if (Number.isFinite(next)) converted[field.name] = Number(next.toFixed(6));
   }
   return converted;
-}
-
-function roundSheets(value: number): number {
-  const tolerance = 8 * Number.EPSILON * Math.max(1, value);
-  return Math.max(1, Math.ceil(value - tolerance));
 }
 
 export function calculate(input: DrywallInput): DrywallResult {
@@ -130,7 +119,7 @@ export function calculate(input: DrywallInput): DrywallResult {
   const drywallArea = netWallArea + ceilingArea;
   const requiredAreaWithWaste = drywallArea * (1 + values.waste / 100);
   const sheetArea = values.sheetLength * values.sheetWidth;
-  const sheetsNeeded = requiredAreaWithWaste === 0 ? 0 : roundSheets(requiredAreaWithWaste / sheetArea);
+  const sheetsNeeded = ceilWholePurchase(requiredAreaWithWaste / sheetArea);
   return {
     unitSystem: values.unitSystem,
     projectType: values.projectType,
@@ -166,7 +155,7 @@ export const drywallCalculator: CalculatorDefinition<DrywallInput, DrywallResult
   metadata: calculatorCatalogBySlug.drywall.metadata,
   fields: getDrywallFields("imperial"),
   fieldGroups: drywallFieldGroups,
-  getFields: (input) => getDrywallFields(isDrywallUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
+  getFields: (input) => getDrywallFields(isDrywallUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
   updateInput,
   createInitialInput: () => ({ ...drywallDefaults }),
   validate,

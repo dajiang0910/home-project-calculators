@@ -25,7 +25,7 @@ Reference: a 14 × 12 ft room has a 52 ft perimeter. Subtract one 3 ft doorway f
 
 ## Validation and product boundaries
 
-Room dimensions accept 0.01–1,000 ft (equivalent metric limits), stock-piece length accepts 0.1–100 ft, door count accepts whole numbers from 0–10,000, door width accepts 0.01–1,000 ft, waste accepts 0–100%, and price accepts $0–$100,000 per piece. Empty values, malformed numbers, booleans, non-finite values, and out-of-range values are rejected. The combined door opening width cannot exceed the room perimeter; equal coverage is allowed and produces zero pieces. Direct invalid calculation calls throw `RangeError`.
+Room dimensions accept 0.01–1,000 ft (equivalent metric limits), stock-piece length accepts 0.1–100 ft, door count accepts whole numbers from 0–10,000, door width accepts 0.01–1,000 ft, waste accepts 0–100%, and price accepts $0–$100,000 per piece. Empty values, malformed numbers, booleans, non-finite values, and out-of-range values are rejected for active inputs. When the door count is zero, the unused door width is hidden and ignored. The combined door opening width cannot exceed the room perimeter; equal coverage is allowed and produces zero pieces. Direct invalid calculation calls throw `RangeError`.
 
 The estimate does not model door or window casing, base shoe, crown molding, closets, stair runs, angled or curved walls, exact miter/coping layouts, profile-specific joins, retailer stock lengths, labor, delivery, or tax. Use the waste allowance for cuts and short leftovers. Irregular rooms should be split into wall runs and combined before piece rounding when they share one order.
 

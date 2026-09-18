@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
 import { baseboardContent } from "../../../content/calculators/baseboard";
 import {
   baseboardDefaults,
@@ -25,13 +26,6 @@ export type BaseboardResult = {
   waste: number;
 };
 
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
 function roomPerimeter(input: BaseboardInput): number {
   return 2 * (input.roomLength + input.roomWidth);
 }
@@ -47,9 +41,9 @@ export function validate(input: unknown): ValidationResult<BaseboardInput> {
 
   const errors: Record<string, string> = {};
   const parsed: Record<string, number> = {};
-  for (const field of getBaseboardFields(raw.unitSystem)) {
+  for (const field of getBaseboardFields(raw.unitSystem, raw)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -66,7 +60,7 @@ export function validate(input: unknown): ValidationResult<BaseboardInput> {
   }
   if (Object.keys(errors).length) return { valid: false, errors };
 
-  const value = { ...parsed, unitSystem: raw.unitSystem } as BaseboardInput;
+  const value = { ...baseboardDefaults, ...parsed, unitSystem: raw.unitSystem } as BaseboardInput;
   const openingLength = value.doors * value.doorWidth;
   if (openingLength > roomPerimeter(value)) {
     return { valid: false, errors: { doors: "Door opening width exceeds the room perimeter. Check the room dimensions, door count, and opening width." } };
@@ -85,17 +79,12 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const to = baseboardUnits[value];
   for (const field of baseboardNumericFields) {
     if (!field.length) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric === undefined) continue;
     const next = numeric * (to.lengthFactor / from.lengthFactor);
     if (Number.isFinite(next)) converted[field.name] = Number(next.toFixed(6));
   }
   return converted;
-}
-
-function roundPieces(value: number): number {
-  const tolerance = 8 * Number.EPSILON * Math.max(1, value);
-  return value === 0 ? 0 : Math.max(1, Math.ceil(value - tolerance));
 }
 
 export function calculate(input: BaseboardInput): BaseboardResult {
@@ -106,7 +95,7 @@ export function calculate(input: BaseboardInput): BaseboardResult {
   const openingLength = values.doors * values.doorWidth;
   const netWallRun = Math.max(0, perimeter - openingLength);
   const requiredLengthWithWaste = netWallRun * (1 + values.waste / 100);
-  const piecesNeeded = roundPieces(requiredLengthWithWaste / values.boardLength);
+  const piecesNeeded = ceilWholePurchase(requiredLengthWithWaste / values.boardLength);
   return {
     unitSystem: values.unitSystem,
     roomPerimeter: perimeter,
@@ -140,7 +129,7 @@ export const baseboardCalculator: CalculatorDefinition<BaseboardInput, Baseboard
   metadata: calculatorCatalogBySlug.baseboard.metadata,
   fields: getBaseboardFields("imperial"),
   fieldGroups: baseboardFieldGroups,
-  getFields: (input) => getBaseboardFields(isBaseboardUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
+  getFields: (input) => getBaseboardFields(isBaseboardUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
   updateInput,
   createInitialInput: () => ({ ...baseboardDefaults }),
   validate,

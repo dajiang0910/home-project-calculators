@@ -1,4 +1,5 @@
-import type { CalculatorField, CalculatorFieldGroup, ShoppingListItem } from "../types";
+import { parseFiniteNumber } from "../numeric";
+import type { CalculatorField, CalculatorFieldGroup, CalculatorFormInput, ShoppingListItem } from "../types";
 
 export type DrywallUnitSystem = "imperial" | "metric";
 export type DrywallProjectType = "walls" | "walls-ceiling" | "ceiling";
@@ -85,7 +86,20 @@ export const drywallFieldGroups: readonly CalculatorFieldGroup[] = [
   { id: "openings", title: "Door & window sizes", description: "Openings are deducted only when the project includes walls. Defaults: doors 3 × 7 ft; windows 3 × 4 ft.", collapsible: true },
 ];
 
-export function getDrywallFields(system: DrywallUnitSystem): readonly CalculatorField[] {
+export function isDrywallNumericFieldActive(
+  name: Exclude<keyof DrywallInput, "unitSystem" | "projectType">,
+  input?: CalculatorFormInput,
+): boolean {
+  if (!input) return true;
+  if (input.projectType === "ceiling" && ["wallHeight", "doors", "windows", "doorWidth", "doorHeight", "windowWidth", "windowHeight"].includes(name)) {
+    return false;
+  }
+  if (["doorWidth", "doorHeight"].includes(name) && parseFiniteNumber(input.doors) === 0) return false;
+  if (["windowWidth", "windowHeight"].includes(name) && parseFiniteNumber(input.windows) === 0) return false;
+  return true;
+}
+
+export function getDrywallFields(system: DrywallUnitSystem, input?: CalculatorFormInput): readonly CalculatorField[] {
   const units = drywallUnits[system];
   return [
     {
@@ -111,7 +125,7 @@ export function getDrywallFields(system: DrywallUnitSystem): readonly Calculator
         { value: "ceiling", label: "Ceiling only" },
       ],
     },
-    ...drywallNumericFields.map((field): CalculatorField => {
+    ...drywallNumericFields.filter((field) => isDrywallNumericFieldActive(field.name, input)).map((field): CalculatorField => {
       const factor = field.length ? units.lengthFactor : 1;
       return {
         name: field.name,

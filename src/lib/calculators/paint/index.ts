@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { parseFiniteNumber } from "../numeric";
 import { paintContent } from "../../../content/calculators/paint";
 import { getPaintFields, paintDefaults, paintFieldGroups, paintNumericFields, paintShoppingList, type PaintInput } from "./config";
 import { convertPaintValue, isPaintUnitSystem, paintUnits, unitFactor, type PaintUnitSystem } from "./units";
@@ -18,13 +19,6 @@ export type PaintResult = {
   estimatedCost: number;
   waste: number;
 };
-
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
 
 function areas(input: PaintInput) {
   const factor = paintUnits[input.unitSystem].lengthFactor;
@@ -45,10 +39,10 @@ export function validate(input: unknown): ValidationResult<PaintInput> {
   }
   const errors: Record<string, string> = {};
   const parsed: Record<string, number> = {};
-  const fields = getPaintFields(raw.unitSystem);
+  const fields = getPaintFields(raw.unitSystem, raw);
   for (const field of fields) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -66,7 +60,7 @@ export function validate(input: unknown): ValidationResult<PaintInput> {
   if (Object.keys(errors).length) return { valid: false, errors };
 
   // Every numeric key has been parsed and checked against its configuration above.
-  const value = { ...parsed, unitSystem: raw.unitSystem } as PaintInput;
+  const value = { ...paintDefaults, ...parsed, unitSystem: raw.unitSystem } as PaintInput;
   const { wallArea, doorArea, windowArea } = areas(value);
   if (doorArea + windowArea > wallArea) {
     return { valid: false, errors: { doors: "Door and window area exceeds the wall area. Check the room dimensions, opening counts, and opening sizes." } };
@@ -82,7 +76,7 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const converted: Record<string, unknown> = { ...input, unitSystem: value };
   for (const field of paintNumericFields) {
     if (!field.quantity) continue;
-    const numeric = parseNumber(input[field.name]);
+    const numeric = parseFiniteNumber(input[field.name]);
     if (numeric !== undefined) {
       const next = convertPaintValue(numeric, field.quantity, input.unitSystem, value);
       const decimalPlaces = field.quantity === "length" ? 4 : 6;
@@ -137,7 +131,7 @@ export const paintCalculator: CalculatorDefinition<PaintInput, PaintResult> = {
   metadata: calculatorCatalogBySlug.paint.metadata,
   fields: getPaintFields("imperial"),
   fieldGroups: paintFieldGroups,
-  getFields: (input) => getPaintFields(isPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
+  getFields: (input) => getPaintFields(isPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
   updateInput,
   createInitialInput: () => ({ ...paintDefaults }),
   validate,

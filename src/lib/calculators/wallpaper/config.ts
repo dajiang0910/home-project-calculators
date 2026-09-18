@@ -1,4 +1,5 @@
-import type { CalculatorField, CalculatorFieldGroup, ShoppingListItem } from "../types";
+import { parseFiniteNumber } from "../numeric";
+import type { CalculatorField, CalculatorFieldGroup, CalculatorFormInput, ShoppingListItem } from "../types";
 
 export type WallpaperUnitSystem = "imperial" | "metric";
 
@@ -101,7 +102,14 @@ export const wallpaperFieldGroups: readonly CalculatorFieldGroup[] = [
   { id: "openings", title: "Door & window sizes", description: "Defaults: doors 3 × 7 ft; windows 3 × 4 ft. These areas are deducted from the walls.", collapsible: true },
 ];
 
-export function getWallpaperFields(system: WallpaperUnitSystem): readonly CalculatorField[] {
+export function isWallpaperNumericFieldActive(name: Exclude<keyof WallpaperInput, "unitSystem">, input?: CalculatorFormInput): boolean {
+  if (!input) return true;
+  if (["doorWidth", "doorHeight"].includes(name) && parseFiniteNumber(input.doors) === 0) return false;
+  if (["windowWidth", "windowHeight"].includes(name) && parseFiniteNumber(input.windows) === 0) return false;
+  return true;
+}
+
+export function getWallpaperFields(system: WallpaperUnitSystem, input?: CalculatorFormInput): readonly CalculatorField[] {
   const units = wallpaperUnits[system];
   return [
     {
@@ -115,7 +123,7 @@ export function getWallpaperFields(system: WallpaperUnitSystem): readonly Calcul
         { value: "metric", label: "Metric — m, cm" },
       ],
     },
-    ...wallpaperNumericFields.map((field): CalculatorField => {
+    ...wallpaperNumericFields.filter((field) => isWallpaperNumericFieldActive(field.name, input)).map((field): CalculatorField => {
       const factor = field.quantity ? units[`${field.quantity}Factor`] : 1;
       return {
         name: field.name,

@@ -10,5 +10,12 @@
     "rootDir": "src",
     "types": ["node"]
   },
-  "include": ["src/lib/calculators/**/*.ts", "src/content/calculators/**/*.ts"]
+  "include": [
+    "src/lib/calculators/**/*.ts",
+    "src/lib/seo/site.ts",
+    "src/lib/seo/site.test.ts",
+    "src/components/calculators/presentation.ts",
+    "src/components/calculators/presentation.test.ts",
+    "src/content/calculators/**/*.ts"
+  ]
 }

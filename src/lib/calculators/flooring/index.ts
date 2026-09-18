@@ -1,5 +1,6 @@
 import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { calculatorCatalogBySlug } from "../catalog";
+import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
 import { flooringContent } from "../../../content/calculators/flooring";
 import { flooringDefaults, flooringFieldGroups, flooringShoppingList, flooringUnits, getFlooringFields, isFlooringUnitSystem, type FlooringInput, type FlooringUnitSystem } from "./config";
 
@@ -11,13 +12,6 @@ export type FlooringResult = {
   estimatedCost: number;
   waste: number;
 };
-
-function parseNumber(value: unknown): number | undefined {
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
-  if (typeof value !== "string" || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return undefined;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
 
 export function validate(input: unknown): ValidationResult<FlooringInput> {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
@@ -31,7 +25,7 @@ export function validate(input: unknown): ValidationResult<FlooringInput> {
   const parsed: Record<string, number> = {};
   for (const field of getFlooringFields(raw.unitSystem)) {
     if (field.type !== "number") continue;
-    const value = parseNumber(raw[field.name]);
+    const value = parseFiniteNumber(raw[field.name]);
     if (value === undefined) {
       errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
     } else if (field.min !== undefined && value < field.min) {
@@ -55,7 +49,7 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
   const from = flooringUnits[input.unitSystem];
   const to = flooringUnits[value];
   for (const name of ["roomLength", "roomWidth", "coveragePerBox"] as const) {
-    const numeric = parseNumber(input[name]);
+    const numeric = parseFiniteNumber(input[name]);
     if (numeric === undefined) continue;
     const factor = name === "coveragePerBox" ? "areaFactor" : "lengthFactor";
     const next = numeric * (to[factor] / from[factor]);
@@ -70,10 +64,7 @@ export function calculate(input: FlooringInput): FlooringResult {
   const values = validation.value;
   const floorArea = values.roomLength * values.roomWidth;
   const requiredAreaWithWaste = floorArea * (1 + values.waste / 100);
-  const boxes = requiredAreaWithWaste / values.coveragePerBox;
-  // Ignore only arithmetic noise at whole-box boundaries, never display rounding.
-  const tolerance = 8 * Number.EPSILON * Math.max(1, boxes);
-  const boxesNeeded = Math.max(1, Math.ceil(boxes - tolerance));
+  const boxesNeeded = ceilWholePurchase(requiredAreaWithWaste / values.coveragePerBox);
   return {
     unitSystem: values.unitSystem, floorArea, requiredAreaWithWaste, boxesNeeded,
     estimatedCost: boxesNeeded * values.pricePerBox, waste: values.waste,
