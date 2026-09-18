@@ -9,7 +9,7 @@ function near(actual: number, expected: number, relativeTolerance = 1e-12) {
 }
 
 test("drywall is registered once and available at its stable slug", () => {
-  assert.equal(getCalculator("drywall"), drywallCalculator);
+  assert.equal(getCalculator("drywall")?.slug, drywallCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "drywall").length, 1);
 });
 
@@ -210,13 +210,11 @@ test("an exactly covered wall can require zero drywall", () => {
   assert.equal(result.estimatedCost, 0);
 });
 
-test("drywall definition supplies all inputs, content, and installation recommendations", () => {
+test("drywall engine supplies all inputs and installation recommendations", () => {
   assert.deepEqual(drywallCalculator.fields.map((field) => field.name), [
     "unitSystem", "projectType", "roomLength", "roomWidth", "wallHeight", "sheetLength", "sheetWidth", "waste", "pricePerSheet",
     "doors", "windows", "doorWidth", "doorHeight", "windowWidth", "windowHeight",
   ]);
   assert.equal(drywallCalculator.shoppingList?.[0].name, "Drywall Sheets");
-  assert.equal(drywallCalculator.content?.related[0].slug, "paint");
-  assert.ok(drywallCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(drywallDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

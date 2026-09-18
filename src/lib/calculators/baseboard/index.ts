@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
-import { baseboardContent } from "../../../content/calculators/baseboard";
+import { formatCurrency, formatNumber } from "../shared";
 import {
   baseboardDefaults,
   baseboardFieldGroups,
@@ -109,24 +108,20 @@ export function calculate(input: BaseboardInput): BaseboardResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: BaseboardResult): readonly ResultItem[] {
   const unit = baseboardUnits[result.unitSystem].length;
   return [
-    { label: "Pieces Needed", value: `${result.piecesNeeded.toLocaleString("en-US")} ${result.piecesNeeded === 1 ? "piece" : "pieces"}`, detail: "Rounded up to full baseboard pieces after waste.", emphasis: true },
-    { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Baseboard pieces only · before tax and installation supplies", emphasis: true },
-    { label: "Baseboard Needed", value: `${number.format(result.requiredLengthWithWaste)} ${unit}`, detail: `Includes ${number.format(result.waste)}% waste for cuts and joins.` },
-    { label: "Net Wall Run", value: `${number.format(result.netWallRun)} ${unit}`, detail: "Room perimeter minus door openings." },
-    { label: "Room Perimeter", value: `${number.format(result.roomPerimeter)} ${unit}` },
-    { label: "Length per Piece", value: `${number.format(result.boardLength)} ${unit}` },
+    { id: "pieces-needed", label: "Pieces Needed", value: `${result.piecesNeeded.toLocaleString("en-US")} ${result.piecesNeeded === 1 ? "piece" : "pieces"}`, detail: "Rounded up to full baseboard pieces after waste.", kind: "primary" },
+    { id: "estimated-cost", label: "Estimated Cost", value: formatCurrency(result.estimatedCost), detail: "Baseboard pieces only · before tax and installation supplies", kind: "cost" },
+    { id: "baseboard-needed", label: "Baseboard Needed", value: `${formatNumber(result.requiredLengthWithWaste)} ${unit}`, detail: `Includes ${formatNumber(result.waste)}% waste for cuts and joins.`, kind: "metric" },
+    { id: "net-wall-run", label: "Net Wall Run", value: `${formatNumber(result.netWallRun)} ${unit}`, detail: "Room perimeter minus door openings.", kind: "metric" },
+    { id: "room-perimeter", label: "Room Perimeter", value: `${formatNumber(result.roomPerimeter)} ${unit}`, kind: "metric" },
+    { id: "length-per-piece", label: "Length per Piece", value: `${formatNumber(result.boardLength)} ${unit}`, kind: "metric" },
   ];
 }
 
-export const baseboardCalculator: CalculatorDefinition<BaseboardInput, BaseboardResult> = {
+export const baseboardCalculator: CalculatorEngine<BaseboardInput, BaseboardResult> = {
   slug: "baseboard",
-  metadata: calculatorCatalogBySlug.baseboard.metadata,
   fields: getBaseboardFields("imperial"),
   fieldGroups: baseboardFieldGroups,
   getFields: (input) => getBaseboardFields(isBaseboardUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
@@ -137,5 +132,4 @@ export const baseboardCalculator: CalculatorDefinition<BaseboardInput, Baseboard
   formatResult,
   shoppingList: baseboardShoppingList,
   resultNote: "For one rectangular room with a continuous baseboard run. Door casings, closets, stair runs, floor transitions, irregular wall segments, exact miter/coping layouts, labor, delivery, and tax are not modeled.",
-  content: baseboardContent,
 };

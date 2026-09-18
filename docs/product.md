@@ -27,7 +27,7 @@ The first phase established the shared page and calculation framework. Phase two
 
 ## SEO and content
 
-The lightweight calculator catalog owns each published tool's title, description, category, keywords, discovery summary, and image. Calculator definitions reference that metadata and continue to own domain behavior. Routes use catalog values for canonical metadata, directory grouping, search, category hubs, and the generated sitemap. Longer educational guidance belongs beside the calculator in page content. URLs use stable lowercase slugs so links remain durable as the catalog grows.
+The calculator publication manifest owns each tool's title, description, category, keywords, discovery summary, image, hero treatment, and explicit engine/content loaders. Catalog views, canonical metadata, search, category hubs, and the generated sitemap derive from that manifest. Engines own domain behavior while longer educational guidance remains server-side page content. URLs use stable lowercase slugs so links remain durable as the catalog grows.
 
 ## Scope boundaries
 

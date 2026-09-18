@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
-import { ceilingPaintContent } from "../../../content/calculators/ceiling-paint";
+import { formatCurrency, formatNumber } from "../shared";
 import {
   ceilingPaintDefaults,
   ceilingPaintFieldGroups,
@@ -100,24 +99,20 @@ export function calculate(input: CeilingPaintInput): CeilingPaintResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: CeilingPaintResult): readonly ResultItem[] {
   const units = ceilingPaintUnits[result.unitSystem];
   return [
-    { label: "Recommended Purchase", value: `${number.format(result.recommendedPurchase)} ${units.volume}`, detail: `Rounded up to whole ${result.unitSystem === "metric" ? "liters" : "US gallons"}.`, emphasis: true },
-    { label: "Estimated Material Cost", value: currency.format(result.estimatedCost), detail: "Ceiling paint only · before tax and supplies", emphasis: true },
-    { label: "Paint Needed", value: `${number.format(result.paintNeeded)} ${units.volume}`, detail: `Includes ${number.format(result.waste)}% waste across ${result.coats} ${result.coats === 1 ? "coat" : "coats"}.` },
-    { label: "Ceiling Area", value: `${number.format(result.ceilingArea)} ${units.area}` },
-    { label: "Total Coverage", value: `${number.format(result.totalCoverageArea)} ${units.area}`, detail: `Ceiling area multiplied by ${result.coats} ${result.coats === 1 ? "coat" : "coats"}.` },
-    { label: "Paint Coverage", value: `${number.format(result.coverage)} ${units.coverage}`, detail: "Coverage for one coat from the entered paint label." },
+    { id: "recommended-purchase", label: "Recommended Purchase", value: `${formatNumber(result.recommendedPurchase)} ${units.volume}`, detail: `Rounded up to whole ${result.unitSystem === "metric" ? "liters" : "US gallons"}.`, kind: "primary" },
+    { id: "estimated-material-cost", label: "Estimated Material Cost", value: formatCurrency(result.estimatedCost), detail: "Ceiling paint only · before tax and supplies", kind: "cost" },
+    { id: "paint-needed", label: "Paint Needed", value: `${formatNumber(result.paintNeeded)} ${units.volume}`, detail: `Includes ${formatNumber(result.waste)}% waste across ${result.coats} ${result.coats === 1 ? "coat" : "coats"}.`, kind: "metric" },
+    { id: "ceiling-area", label: "Ceiling Area", value: `${formatNumber(result.ceilingArea)} ${units.area}`, kind: "metric" },
+    { id: "total-coverage", label: "Total Coverage", value: `${formatNumber(result.totalCoverageArea)} ${units.area}`, detail: `Ceiling area multiplied by ${result.coats} ${result.coats === 1 ? "coat" : "coats"}.`, kind: "metric" },
+    { id: "paint-coverage", label: "Paint Coverage", value: `${formatNumber(result.coverage)} ${units.coverage}`, detail: "Coverage for one coat from the entered paint label.", kind: "metric" },
   ];
 }
 
-export const ceilingPaintCalculator: CalculatorDefinition<CeilingPaintInput, CeilingPaintResult> = {
+export const ceilingPaintCalculator: CalculatorEngine<CeilingPaintInput, CeilingPaintResult> = {
   slug: "ceiling-paint",
-  metadata: calculatorCatalogBySlug["ceiling-paint"].metadata,
   fields: getCeilingPaintFields("imperial"),
   fieldGroups: ceilingPaintFieldGroups,
   getFields: (input) => getCeilingPaintFields(isCeilingPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
@@ -128,5 +123,4 @@ export const ceilingPaintCalculator: CalculatorDefinition<CeilingPaintInput, Cei
   formatResult,
   shoppingList: ceilingPaintShoppingList,
   resultNote: "For one rectangular ceiling only. Walls, trim, crown molding, skylights, fixtures, primer, labor, delivery, and tax are excluded. Use the waste allowance for texture, cut-in work, roller loss, and overhead conditions.",
-  content: ceilingPaintContent,
 };

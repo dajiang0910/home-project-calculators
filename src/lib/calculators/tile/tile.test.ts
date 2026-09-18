@@ -9,7 +9,7 @@ function near(actual: number, expected: number) {
 }
 
 test("tile is registered once and available at its stable slug", () => {
-  assert.equal(getCalculator("tile"), tileCalculator);
+  assert.equal(getCalculator("tile")?.slug, tileCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "tile").length, 1);
 });
 
@@ -116,10 +116,8 @@ test("invalid fields are rejected and invalid edits survive unit switches", () =
   assert.throws(() => calculate({ ...tileDefaults, tileWidth: 0 }), RangeError);
 });
 
-test("tile definition supplies every input, content, and installation recommendations", () => {
+test("tile engine supplies every input and installation recommendations", () => {
   assert.deepEqual(tileCalculator.fields.map((field) => field.name), ["unitSystem", "roomLength", "roomWidth", "tileLength", "tileWidth", "waste", "tilesPerBox", "pricePerBox"]);
   assert.equal(tileCalculator.shoppingList?.[0].name, "Tile");
-  assert.equal(tileCalculator.content?.related[0].slug, "flooring");
-  assert.ok(tileCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(tileDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

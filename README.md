@@ -1,38 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Home Project Calculators
 
-## Getting Started
+Home improvement calculators for material quantities, waste, purchase packages, and estimated cost. The application uses Next.js 16, React 19, strict TypeScript, and a shared calculator UI.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. Development and tests use that origin when `NEXT_PUBLIC_SITE_URL` is absent. Production builds require an HTTP(S) site origin:
 
-Production builds require `NEXT_PUBLIC_SITE_URL` to be set to the deployed HTTP(S) origin, for example `https://calculators.example.com`. Development and tests use `http://localhost:3000` when the variable is absent.
+```bash
+$env:NEXT_PUBLIC_SITE_URL = "https://calculators.example.com"
+npm run build
+npm run start
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Calculator architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Each published slug has one manifest entry in [`src/lib/calculators/registry.ts`](src/lib/calculators/registry.ts). The entry owns metadata, discovery fields, hero presentation, and explicit loaders for the calculator engine and server-side guide content.
 
-## Learn More
+The engine in `src/lib/calculators/<slug>/` is a pure TypeScript module. It owns fields, defaults, validation, unit conversion, formulas, result formatting, shopping recommendations, and notes. It must not import catalog data or guide content. The client loads only the current engine through [`src/lib/calculators/runtime.ts`](src/lib/calculators/runtime.ts); the route loads the guide on the server.
 
-To learn more about Next.js, take a look at the following resources:
+The dynamic route remains `/calculators/[slug]`. Catalog pages, category hubs, static params, sitemap entries, and hero presentation derive from the registry. Shared UI lives under `src/components/calculators/`; formulas do not belong in React components.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To add a calculator:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Write its specification in `docs/` with units, assumptions, bounds, and rounding rules.
+2. Implement the engine and contract/edge-case tests.
+3. Add the explicit engine and content loaders plus manifest metadata to `registry.ts`.
+4. Verify the route, SEO, search, validation, unit switching, responsive layout, and browser flow.
+5. Run the full verification commands below before publishing the slug.
 
-## Deploy on Vercel
+## Verification
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Playwright tests run against the production server in Chromium desktop and mobile profiles. CI uploads the Playwright report, screenshots, and traces when a browser test fails.

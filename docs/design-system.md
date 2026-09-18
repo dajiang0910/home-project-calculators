@@ -1,6 +1,6 @@
 # Home Project Calculators Design System
 
-The calculator pages share a compact blue and white planning UI based on `docs/design-reference/paintCalculator.png`. The system keeps business definitions independent from presentation: calculators provide fields, validation, calculation, formatted results, shopping items, and content; shared React components render those values.
+The calculator pages share a compact blue and white planning UI based on `docs/design-reference/paintCalculator.png`. The system keeps engines independent from presentation: engines provide fields, validation, calculation, formatted results, shopping items, and notes; manifests provide metadata and presentation; shared React components render those values.
 
 ## Tokens
 
@@ -14,9 +14,9 @@ Hero art is presentation-only and lives in `public/images/calculators/`; each pu
 
 ## Component rules
 
-- `FormField` renders every definition field, including unit labels, help text, and field errors. `UnitToggle` only emits a selected value; unit conversion stays in the calculator definition.
+- `FormField` renders every engine field, including unit labels, help text, and field errors. `UnitToggle` only emits a selected value; unit conversion stays in the calculator engine.
 - `ResultMetric` renders `ResultItem`; `CostEstimate` is a visual wrapper and never computes cost.
-- `ShoppingList` displays the static list supplied by a definition. It must not invent quantities for tools or supplies.
+- `ShoppingList` displays the static list supplied by an engine. It must not invent quantities for tools or supplies.
 - `InfoCard`, `FormulaCard`, `ExampleCard`, `FAQ`, and `RelatedCalculatorCard` consume `CalculatorContent` and preserve its text.
 - New visual differences belong in presentation metadata, not in Paint or Flooring calculation types.
 

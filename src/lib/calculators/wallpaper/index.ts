@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { ceilWholePurchase, floorWholeCapacity, parseFiniteNumber } from "../numeric";
-import { wallpaperContent } from "../../../content/calculators/wallpaper";
+import { formatCurrency, formatNumber } from "../shared";
 import {
   getWallpaperFields,
   isWallpaperUnitSystem,
@@ -138,24 +137,20 @@ export function calculate(input: WallpaperInput): WallpaperResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: WallpaperResult): readonly ResultItem[] {
   const units = wallpaperUnits[result.unitSystem];
   return [
-    { label: "Rolls Needed", value: `${result.rollsNeeded.toLocaleString("en-US")} ${result.rollsNeeded === 1 ? "roll" : "rolls"}`, detail: `Allows for pattern repeat and ${number.format(result.waste)}% extra waste.`, emphasis: true },
-    { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Wallpaper rolls only · before tax and installation supplies", emphasis: true },
-    { label: "Area-based Strip Estimate", value: `${result.stripsNeeded.toLocaleString("en-US")} ${result.stripsNeeded === 1 ? "strip" : "strips"}`, detail: "Opening area is treated as reusable material; actual strip reuse depends on opening placement and layout." },
-    { label: "Net Wall Area", value: `${number.format(result.netWallArea)} ${units.area}`, detail: "Four walls minus doors and windows." },
-    { label: "Adjusted Drop", value: `${number.format(result.adjustedDropLength)} ${units.roomLength}`, detail: "Wall height rounded to the next full pattern repeat." },
-    { label: "Strips per Roll", value: `${result.stripsPerRoll.toLocaleString("en-US")} ${result.stripsPerRoll === 1 ? "strip" : "strips"}` },
+    { id: "rolls-needed", label: "Rolls Needed", value: `${result.rollsNeeded.toLocaleString("en-US")} ${result.rollsNeeded === 1 ? "roll" : "rolls"}`, detail: `Allows for pattern repeat and ${formatNumber(result.waste)}% extra waste.`, kind: "primary" },
+    { id: "estimated-cost", label: "Estimated Cost", value: formatCurrency(result.estimatedCost), detail: "Wallpaper rolls only · before tax and installation supplies", kind: "cost" },
+    { id: "strips-needed", label: "Area-based Strip Estimate", value: `${result.stripsNeeded.toLocaleString("en-US")} ${result.stripsNeeded === 1 ? "strip" : "strips"}`, detail: "Opening area is treated as reusable material; actual strip reuse depends on opening placement and layout.", kind: "metric" },
+    { id: "net-wall-area", label: "Net Wall Area", value: `${formatNumber(result.netWallArea)} ${units.area}`, detail: "Four walls minus doors and windows.", kind: "metric" },
+    { id: "adjusted-drop", label: "Adjusted Drop", value: `${formatNumber(result.adjustedDropLength)} ${units.roomLength}`, detail: "Wall height rounded to the next full pattern repeat.", kind: "metric" },
+    { id: "strips-per-roll", label: "Strips per Roll", value: `${result.stripsPerRoll.toLocaleString("en-US")} ${result.stripsPerRoll === 1 ? "strip" : "strips"}`, kind: "metric" },
   ];
 }
 
-export const wallpaperCalculator: CalculatorDefinition<WallpaperInput, WallpaperResult> = {
+export const wallpaperCalculator: CalculatorEngine<WallpaperInput, WallpaperResult> = {
   slug: "wallpaper",
-  metadata: calculatorCatalogBySlug.wallpaper.metadata,
   fields: getWallpaperFields("imperial"),
   fieldGroups: wallpaperFieldGroups,
   getFields: (input) => getWallpaperFields(isWallpaperUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
@@ -166,5 +161,4 @@ export const wallpaperCalculator: CalculatorDefinition<WallpaperInput, Wallpaper
   formatResult,
   shoppingList: wallpaperShoppingList,
   resultNote: "Area-based planning estimate for four walls of one rectangular room. Deducted opening area may not translate into reusable full-width strips, so order conservatively when opening placement or pattern matching limits offcut reuse. Starting position, wall irregularities, print batch, labor, delivery, and tax are not modeled. Confirm the physical roll dimensions and repeat on the product label before buying.",
-  content: wallpaperContent,
 };

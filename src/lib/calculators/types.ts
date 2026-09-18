@@ -50,10 +50,11 @@ export type ValidationResult<TInput> =
   | { valid: false; value?: TInput; errors: ValidationErrors };
 
 export type ResultItem = {
+  id: string;
   label: string;
   value: string;
   detail?: string;
-  emphasis?: boolean;
+  kind: "primary" | "cost" | "metric";
 };
 
 export type CalculatorMetadata = {
@@ -64,9 +65,8 @@ export type CalculatorMetadata = {
   keywords: readonly string[];
 };
 
-export type CalculatorDefinition<TInput, TResult> = {
+export type CalculatorEngine<TInput, TResult> = {
   slug: string;
-  metadata: CalculatorMetadata;
   fields: readonly CalculatorField[];
   fieldGroups?: readonly CalculatorFieldGroup[];
   getFields?: (input: CalculatorFormInput) => readonly CalculatorField[];
@@ -77,12 +77,17 @@ export type CalculatorDefinition<TInput, TResult> = {
   formatResult(result: TResult): readonly ResultItem[];
   shoppingList?: readonly ShoppingListItem[];
   resultNote?: string;
-  content?: CalculatorContent;
 };
 
 // The registry erases domain types; consumers must validate before calculate and
 // pass the returned result only to that same definition's formatter.
-export type AnyCalculatorDefinition = CalculatorDefinition<unknown, unknown>;
+export type AnyCalculatorEngine = CalculatorEngine<unknown, unknown>;
+
+/** @deprecated Use CalculatorEngine for domain implementations. */
+export type CalculatorDefinition<TInput, TResult> = CalculatorEngine<TInput, TResult>;
+
+/** @deprecated Use AnyCalculatorEngine for runtime loaders. */
+export type AnyCalculatorDefinition = AnyCalculatorEngine;
 
 export type CalculatorContent = {
   intro: string;
@@ -91,4 +96,18 @@ export type CalculatorContent = {
   example: { description: string; steps: readonly string[]; conclusion: string };
   faq: readonly { question: string; answer: string }[];
   related: readonly { slug: string; title: string; description: string }[];
+};
+
+export type CalculatorHero = "paint" | "flooring" | "tile" | "drywall" | "wallpaper" | "ceilingPaint" | "baseboard";
+
+export type CalculatorManifest = {
+  slug: string;
+  metadata: CalculatorMetadata;
+  summary: string;
+  marker: string;
+  image: string;
+  featured?: boolean;
+  hero: CalculatorHero;
+  loadEngine: () => Promise<AnyCalculatorEngine>;
+  loadContent: () => Promise<CalculatorContent>;
 };

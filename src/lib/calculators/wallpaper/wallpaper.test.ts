@@ -9,7 +9,7 @@ function near(actual: number, expected: number, relativeTolerance = 1e-12) {
 }
 
 test("wallpaper is registered once and available at its stable slug", () => {
-  assert.equal(getCalculator("wallpaper"), wallpaperCalculator);
+  assert.equal(getCalculator("wallpaper")?.slug, wallpaperCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "wallpaper").length, 1);
 });
 
@@ -198,13 +198,11 @@ test("an exactly covered wall produces zero strips, rolls, and cost", () => {
   assert.equal(result.estimatedCost, 0);
 });
 
-test("wallpaper definition supplies all inputs, content, and installation recommendations", () => {
+test("wallpaper engine supplies all inputs and installation recommendations", () => {
   assert.deepEqual(wallpaperCalculator.fields.map((field) => field.name), [
     "unitSystem", "roomLength", "roomWidth", "wallHeight", "rollWidth", "rollLength", "patternRepeat", "waste", "pricePerRoll",
     "doors", "windows", "doorWidth", "doorHeight", "windowWidth", "windowHeight",
   ]);
   assert.equal(wallpaperCalculator.shoppingList?.[0].name, "Wallpaper");
-  assert.equal(wallpaperCalculator.content?.related[0].slug, "paint");
-  assert.ok(wallpaperCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(wallpaperDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

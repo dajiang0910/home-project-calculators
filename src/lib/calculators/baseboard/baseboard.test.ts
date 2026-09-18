@@ -9,7 +9,7 @@ function near(actual: number, expected: number, relativeTolerance = 1e-12) {
 }
 
 test("baseboard is registered once and available at its stable slug", () => {
-  assert.equal(getCalculator("baseboard"), baseboardCalculator);
+  assert.equal(getCalculator("baseboard")?.slug, baseboardCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "baseboard").length, 1);
 });
 
@@ -143,12 +143,10 @@ test("an exactly covered perimeter produces zero pieces and cost", () => {
   assert.equal(result.estimatedCost, 0);
 });
 
-test("definition supplies all fields, content, and shopping recommendations", () => {
+test("engine supplies all fields and shopping recommendations", () => {
   assert.deepEqual(baseboardCalculator.fields.map((field) => field.name), [
     "unitSystem", "roomLength", "roomWidth", "boardLength", "waste", "pricePerBoard", "doors", "doorWidth",
   ]);
   assert.equal(baseboardCalculator.shoppingList?.[0].name, "Baseboard");
-  assert.equal(baseboardCalculator.content?.related[0].slug, "flooring");
-  assert.ok(baseboardCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(baseboardDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

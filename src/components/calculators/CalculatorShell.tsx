@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import { getCalculatorCategory } from "@/src/lib/calculators/catalog";
-import type { CalculatorMetadata, ResultItem, ShoppingListItem, ValidationErrors } from "@/src/lib/calculators/types";
+import type { CalculatorHero as CalculatorHeroKind, CalculatorMetadata, ResultItem, ShoppingListItem, ValidationErrors } from "@/src/lib/calculators/types";
 import { Breadcrumb } from "../site/Breadcrumb";
 import { CalculatorHero } from "./CalculatorHero";
 import { ResultCard } from "./ResultCard";
@@ -8,8 +7,10 @@ import { ShoppingList } from "./ShoppingList";
 import styles from "./calculator.module.css";
 
 type CalculatorShellProps = {
-  slug: string;
   metadata: CalculatorMetadata;
+  hero: CalculatorHeroKind;
+  image: string;
+  category?: { shortTitle: string; slug: string };
   intro?: string;
   children: ReactNode;
   guide?: ReactNode;
@@ -19,8 +20,7 @@ type CalculatorShellProps = {
   resultNote?: string;
 };
 
-export function CalculatorShell({ slug, metadata, intro, children, guide, result, errors, shoppingList, resultNote }: CalculatorShellProps) {
-  const category = getCalculatorCategory(metadata.category);
+export function CalculatorShell({ metadata, hero, image, category, intro, children, guide, result, errors, shoppingList, resultNote }: CalculatorShellProps) {
   return (
     <main id="main-content" className={styles.page}>
       <div className={styles.container}>
@@ -30,7 +30,7 @@ export function CalculatorShell({ slug, metadata, intro, children, guide, result
           ...(category ? [{ label: category.shortTitle, href: `/calculators/categories/${category.slug}` }] : []),
           { label: metadata.title },
         ]} />
-        <CalculatorHero slug={slug} metadata={metadata} intro={intro} />
+        <CalculatorHero metadata={metadata} intro={intro} hero={hero} image={image} />
         <div className={styles.workspace}>
           <section aria-label="Calculator inputs" className={styles.inputPanel}>{children}</section>
           <div className={styles.summaryColumn}>

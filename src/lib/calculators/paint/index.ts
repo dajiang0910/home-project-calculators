@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { parseFiniteNumber } from "../numeric";
-import { paintContent } from "../../../content/calculators/paint";
+import { formatCurrency, formatNumber } from "../shared";
 import { getPaintFields, paintDefaults, paintFieldGroups, paintNumericFields, paintShoppingList, type PaintInput } from "./config";
 import { convertPaintValue, isPaintUnitSystem, paintUnits, unitFactor, type PaintUnitSystem } from "./units";
 
@@ -109,26 +108,22 @@ export function calculate(input: PaintInput): PaintResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: PaintResult): readonly ResultItem[] {
   const units = paintUnits[result.unitSystem];
-  const area = (value: number) => `${number.format(value * units.areaFactor)} ${units.area}`;
+  const area = (value: number) => `${formatNumber(value * units.areaFactor)} ${units.area}`;
   return [
-    { label: "Recommended Purchase", value: `${number.format(result.recommendedPurchase)} ${units.volume}`, detail: `Rounded up to whole ${result.unitSystem === "metric" ? "liters" : "US gallons"}.`, emphasis: true },
-    { label: "Estimated Material Cost", value: currency.format(result.estimatedCost), detail: "Paint only · before tax and supplies", emphasis: true },
-    { label: "Paint Needed", value: `${number.format(result.paintNeeded)} ${units.volume}`, detail: `Includes ${number.format(result.waste)}% waste; before purchase rounding.` },
-    { label: "Paintable Area", value: area(result.paintableArea), detail: "Walls minus doors and windows, for one coat." },
-    { label: "Wall Area", value: area(result.wallArea) },
-    { label: "Door Area", value: area(result.doorArea), detail: "Deducted from the walls." },
-    { label: "Window Area", value: area(result.windowArea), detail: "Deducted from the walls." },
+    { id: "recommended-purchase", label: "Recommended Purchase", value: `${formatNumber(result.recommendedPurchase)} ${units.volume}`, detail: `Rounded up to whole ${result.unitSystem === "metric" ? "liters" : "US gallons"}.`, kind: "primary" },
+    { id: "estimated-material-cost", label: "Estimated Material Cost", value: formatCurrency(result.estimatedCost), detail: "Paint only · before tax and supplies", kind: "cost" },
+    { id: "paint-needed", label: "Paint Needed", value: `${formatNumber(result.paintNeeded)} ${units.volume}`, detail: `Includes ${formatNumber(result.waste)}% waste; before purchase rounding.`, kind: "metric" },
+    { id: "paintable-area", label: "Paintable Area", value: area(result.paintableArea), detail: "Walls minus doors and windows, for one coat.", kind: "metric" },
+    { id: "wall-area", label: "Wall Area", value: area(result.wallArea), kind: "metric" },
+    { id: "door-area", label: "Door Area", value: area(result.doorArea), detail: "Deducted from the walls.", kind: "metric" },
+    { id: "window-area", label: "Window Area", value: area(result.windowArea), detail: "Deducted from the walls.", kind: "metric" },
   ];
 }
 
-export const paintCalculator: CalculatorDefinition<PaintInput, PaintResult> = {
+export const paintCalculator: CalculatorEngine<PaintInput, PaintResult> = {
   slug: "paint",
-  metadata: calculatorCatalogBySlug.paint.metadata,
   fields: getPaintFields("imperial"),
   fieldGroups: paintFieldGroups,
   getFields: (input) => getPaintFields(isPaintUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
@@ -139,5 +134,4 @@ export const paintCalculator: CalculatorDefinition<PaintInput, PaintResult> = {
   formatResult,
   shoppingList: paintShoppingList,
   resultNote: "For four walls only. Ceiling, trim, primer, tools, labor, and tax are excluded from the paint estimate. Check your paint label and local can sizes before buying.",
-  content: paintContent,
 };

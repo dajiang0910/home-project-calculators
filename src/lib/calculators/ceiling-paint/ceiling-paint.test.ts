@@ -9,7 +9,7 @@ function near(actual: number, expected: number, relativeTolerance = 1e-12) {
 }
 
 test("ceiling paint is registered once and available at its stable slug", () => {
-  assert.equal(getCalculator("ceiling-paint"), ceilingPaintCalculator);
+  assert.equal(getCalculator("ceiling-paint")?.slug, ceilingPaintCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "ceiling-paint").length, 1);
 });
 
@@ -119,12 +119,10 @@ test("invalid fields and choices are rejected", () => {
   assert.throws(() => calculate({ ...ceilingPaintDefaults, coverage: 0 }), RangeError);
 });
 
-test("definition supplies all fields, content, and shopping recommendations", () => {
+test("engine supplies all fields and shopping recommendations", () => {
   assert.deepEqual(ceilingPaintCalculator.fields.map((field) => field.name), [
     "unitSystem", "roomLength", "roomWidth", "coats", "coverage", "waste", "pricePerUnit",
   ]);
   assert.equal(ceilingPaintCalculator.shoppingList?.[0].name, "Ceiling Paint");
-  assert.equal(ceilingPaintCalculator.content?.related[0].slug, "paint");
-  assert.ok(ceilingPaintCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(ceilingPaintDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

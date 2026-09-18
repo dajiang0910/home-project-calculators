@@ -73,7 +73,9 @@
 .search:focus-within .searchControl { border-color: var(--hpc-color-brand); box-shadow: 0 0 0 3px rgb(18 93 230 / 12%), 0 12px 34px rgb(20 45 80 / 10%); }
 .searchResults { position: absolute; width: 100%; top: calc(100% + 8px); display: grid; overflow: hidden; border: 1px solid var(--hpc-color-border); border-radius: 8px; background: #fff; box-shadow: 0 20px 50px rgb(20 45 80 / 16%); padding: 8px; }
 .searchResults > p { color: var(--hpc-color-text-secondary); font-size: 10px; font-weight: 750; letter-spacing: .08em; padding: 6px 8px 9px; text-transform: uppercase; }
-.searchResults a { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 11px; border-top: 1px solid var(--hpc-color-border); color: inherit; padding: 10px 8px; text-decoration: none; }
+.searchResults ul { display: grid; margin: 0; padding: 0; list-style: none; }
+.searchResults li { border-top: 1px solid var(--hpc-color-border); }
+.searchResults a { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 11px; color: inherit; padding: 10px 8px; text-decoration: none; }
 .searchResults a:hover { background: var(--hpc-color-brand-soft); }
 .searchResults strong, .searchResults small { display: block; }
 .searchResults strong { font-size: 13px; }

@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
-import { drywallContent } from "../../../content/calculators/drywall";
+import { formatCurrency, formatNumber } from "../shared";
 import {
   drywallDefaults,
   drywallFieldGroups,
@@ -136,23 +135,19 @@ export function calculate(input: DrywallInput): DrywallResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: DrywallResult): readonly ResultItem[] {
   const unit = drywallUnits[result.unitSystem].area;
   return [
-    { label: "Sheets Needed", value: `${result.sheetsNeeded.toLocaleString("en-US")} ${result.sheetsNeeded === 1 ? "sheet" : "sheets"}`, detail: "Rounded up to full sheets after waste.", emphasis: true },
-    { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Drywall sheets only · before tax and installation supplies", emphasis: true },
-    { label: "Drywall Area", value: `${number.format(result.drywallArea)} ${unit}`, detail: "Selected surfaces after deducting wall openings." },
-    { label: "Area With Waste", value: `${number.format(result.requiredAreaWithWaste)} ${unit}`, detail: `Includes ${number.format(result.waste)}% waste.` },
-    { label: "Coverage per Sheet", value: `${number.format(result.sheetArea)} ${unit}` },
+    { id: "sheets-needed", label: "Sheets Needed", value: `${result.sheetsNeeded.toLocaleString("en-US")} ${result.sheetsNeeded === 1 ? "sheet" : "sheets"}`, detail: "Rounded up to full sheets after waste.", kind: "primary" },
+    { id: "estimated-cost", label: "Estimated Cost", value: formatCurrency(result.estimatedCost), detail: "Drywall sheets only · before tax and installation supplies", kind: "cost" },
+    { id: "drywall-area", label: "Drywall Area", value: `${formatNumber(result.drywallArea)} ${unit}`, detail: "Selected surfaces after deducting wall openings.", kind: "metric" },
+    { id: "required-area-with-waste", label: "Area With Waste", value: `${formatNumber(result.requiredAreaWithWaste)} ${unit}`, detail: `Includes ${formatNumber(result.waste)}% waste.`, kind: "metric" },
+    { id: "coverage-per-sheet", label: "Coverage per Sheet", value: `${formatNumber(result.sheetArea)} ${unit}`, kind: "metric" },
   ];
 }
 
-export const drywallCalculator: CalculatorDefinition<DrywallInput, DrywallResult> = {
+export const drywallCalculator: CalculatorEngine<DrywallInput, DrywallResult> = {
   slug: "drywall",
-  metadata: calculatorCatalogBySlug.drywall.metadata,
   fields: getDrywallFields("imperial"),
   fieldGroups: drywallFieldGroups,
   getFields: (input) => getDrywallFields(isDrywallUnitSystem(input.unitSystem) ? input.unitSystem : "imperial", input),
@@ -163,5 +158,4 @@ export const drywallCalculator: CalculatorDefinition<DrywallInput, DrywallResult
   formatResult,
   shoppingList: drywallShoppingList,
   resultNote: "Area-based planning estimate for one rectangular room. Sheet orientation, stud spacing, seams, staggered joints, specialty board, multi-layer assemblies, labor, delivery, and tax are not modeled. Confirm the board type, thickness, and layout before buying.",
-  content: drywallContent,
 };

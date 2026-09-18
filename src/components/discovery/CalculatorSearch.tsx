@@ -41,27 +41,23 @@ export function CalculatorSearch({ calculators }: { calculators: readonly Calcul
         <span aria-hidden="true" className={styles.searchIcon} />
         <input
           type="search"
-          role="combobox"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search paint, flooring, drywall…"
           aria-label="Search calculators"
-          aria-controls="calculator-search-results"
-          aria-expanded={focused}
-          aria-autocomplete="list"
         />
         <button type="submit" disabled={!results.length}>Find a calculator <span aria-hidden="true">→</span></button>
       </div>
       {focused ? (
         <div id="calculator-search-results" className={styles.searchResults} aria-live="polite">
           <p>{normalizedQuery ? `${results.length} matching ${results.length === 1 ? "tool" : "tools"}` : "Popular calculators"}</p>
-          {results.length ? results.map((calculator) => (
-            <Link key={calculator.slug} href={`/calculators/${calculator.slug}`}>
+          {results.length ? <ul aria-label="Calculator results">{results.map((calculator) => (
+            <li key={calculator.slug}><Link href={`/calculators/${calculator.slug}`}>
               <span className={styles.resultMarker}>{calculator.marker}</span>
               <span><strong>{calculator.metadata.title}</strong><small>{calculator.summary}</small></span>
               <span aria-hidden="true" className={styles.resultArrow}>→</span>
-            </Link>
-          )) : <div className={styles.emptyResult}>No calculator matches yet. Browse the full directory to see every available tool.</div>}
+            </Link></li>
+          ))}</ul> : <div className={styles.emptyResult}>No calculator matches yet. Browse the full directory to see every available tool.</div>}
         </div>
       ) : null}
     </form>

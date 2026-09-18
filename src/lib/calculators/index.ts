@@ -1,4 +1,6 @@
-export { calculatorRegistry, getCalculator, listCalculators } from "./registry";
+export { calculatorRegistry, getCalculator, getCalculatorManifest, listCalculators } from "./registry";
+export { calculatorEngineLoaders, loadCalculatorEngine } from "./runtime";
+export { convertNumericFields, formatCurrency, formatNumber, validateNumericFields } from "./shared";
 export {
   calculatorCatalog,
   calculatorCatalogBySlug,
@@ -10,8 +12,10 @@ export {
 } from "./catalog";
 export type {
   AnyCalculatorDefinition,
+  AnyCalculatorEngine,
   CalculatorCategory,
   CalculatorDefinition,
+  CalculatorEngine,
   CalculatorField,
   CalculatorFieldOption,
   CalculatorFieldType,
@@ -19,6 +23,8 @@ export type {
   CalculatorFormInput,
   CalculatorContent,
   CalculatorMetadata,
+  CalculatorManifest,
+  CalculatorHero,
   ShoppingListItem,
   ResultItem,
   ValidationErrors,

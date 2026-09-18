@@ -1,20 +1,9 @@
 import type { CalculatorMetadata } from "@/src/lib/calculators";
 import Image from "next/image";
 import { Icon } from "../ui/Icon";
-import { getCalculatorPresentation } from "./presentation";
 import styles from "./calculator.module.css";
 
-export function CalculatorHero({ slug, metadata, intro }: { slug: string; metadata: CalculatorMetadata; intro?: string }) {
-  const hero = getCalculatorPresentation(slug).hero;
-  const image = {
-    paint: "/images/calculators/paint-hero.png",
-    flooring: "/images/calculators/flooring-hero.png",
-    tile: "/images/calculators/tile-hero.png",
-    drywall: "/images/calculators/drywall-hero.png",
-    wallpaper: "/images/calculators/wallpaper-hero.png",
-    ceilingPaint: "/images/calculators/ceiling-paint-hero.png",
-    baseboard: "/images/calculators/baseboard-hero.png",
-  }[hero];
+export function CalculatorHero({ metadata, intro, hero, image }: { metadata: CalculatorMetadata; intro?: string; hero: "paint" | "flooring" | "tile" | "drywall" | "wallpaper" | "ceilingPaint" | "baseboard"; image: string }) {
   const heroClass = {
     paint: styles.heroPaint,
     flooring: styles.heroFlooring,

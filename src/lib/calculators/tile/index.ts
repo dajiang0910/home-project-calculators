@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
 import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
-import { tileContent } from "../../../content/calculators/tile";
+import { formatCurrency, formatNumber } from "../shared";
 import {
   getTileFields,
   isTileUnitSystem,
@@ -102,23 +101,19 @@ export function calculate(input: TileInput): TileResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: TileResult): readonly ResultItem[] {
   const unit = tileUnits[result.unitSystem].area;
   return [
-    { label: "Tiles Needed", value: `${result.tilesNeeded.toLocaleString("en-US")} ${result.tilesNeeded === 1 ? "tile" : "tiles"}`, detail: `Includes ${number.format(result.waste)}% waste and rounds up to a whole tile.`, emphasis: true },
-    { label: "Boxes Needed", value: `${result.boxesNeeded.toLocaleString("en-US")} ${result.boxesNeeded === 1 ? "box" : "boxes"}`, detail: `${result.tilesPurchased.toLocaleString("en-US")} tiles purchased in full boxes.`, emphasis: true },
-    { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Tile boxes only · before tax and installation supplies", emphasis: true },
-    { label: "Surface Area", value: `${number.format(result.surfaceArea)} ${unit}` },
-    { label: "Area per Tile", value: `${number.format(result.tileArea)} ${unit}` },
+    { id: "tiles-needed", label: "Tiles Needed", value: `${result.tilesNeeded.toLocaleString("en-US")} ${result.tilesNeeded === 1 ? "tile" : "tiles"}`, detail: `Includes ${formatNumber(result.waste)}% waste and rounds up to a whole tile.`, kind: "primary" },
+    { id: "boxes-needed", label: "Boxes Needed", value: `${result.boxesNeeded.toLocaleString("en-US")} ${result.boxesNeeded === 1 ? "box" : "boxes"}`, detail: `${result.tilesPurchased.toLocaleString("en-US")} tiles purchased in full boxes.`, kind: "primary" },
+    { id: "estimated-cost", label: "Estimated Cost", value: formatCurrency(result.estimatedCost), detail: "Tile boxes only · before tax and installation supplies", kind: "cost" },
+    { id: "surface-area", label: "Surface Area", value: `${formatNumber(result.surfaceArea)} ${unit}`, kind: "metric" },
+    { id: "area-per-tile", label: "Area per Tile", value: `${formatNumber(result.tileArea)} ${unit}`, kind: "metric" },
   ];
 }
 
-export const tileCalculator: CalculatorDefinition<TileInput, TileResult> = {
+export const tileCalculator: CalculatorEngine<TileInput, TileResult> = {
   slug: "tile",
-  metadata: calculatorCatalogBySlug.tile.metadata,
   fields: getTileFields("imperial"),
   fieldGroups: tileFieldGroups,
   getFields: (input) => getTileFields(isTileUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
@@ -129,5 +124,4 @@ export const tileCalculator: CalculatorDefinition<TileInput, TileResult> = {
   formatResult,
   shoppingList: tileShoppingList,
   resultNote: "For one rectangular floor or wall section. Layout, grout joints, partial edge pieces, pattern-specific cuts, installer requirements, labor, delivery, and tax are not modeled. Confirm box contents and dye lot before buying.",
-  content: tileContent,
 };

@@ -1,7 +1,6 @@
-import type { CalculatorDefinition, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { calculatorCatalogBySlug } from "../catalog";
-import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
-import { flooringContent } from "../../../content/calculators/flooring";
+import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
+import { ceilWholePurchase } from "../numeric";
+import { convertNumericFields, formatCurrency, formatNumber, validateNumericFields } from "../shared";
 import { flooringDefaults, flooringFieldGroups, flooringShoppingList, flooringUnits, getFlooringFields, isFlooringUnitSystem, type FlooringInput, type FlooringUnitSystem } from "./config";
 
 export type FlooringResult = {
@@ -21,21 +20,7 @@ export function validate(input: unknown): ValidationResult<FlooringInput> {
   if (!isFlooringUnitSystem(raw.unitSystem)) {
     return { valid: false, errors: { unitSystem: "Choose US / Imperial or Metric units." } };
   }
-  const errors: Record<string, string> = {};
-  const parsed: Record<string, number> = {};
-  for (const field of getFlooringFields(raw.unitSystem)) {
-    if (field.type !== "number") continue;
-    const value = parseFiniteNumber(raw[field.name]);
-    if (value === undefined) {
-      errors[field.name] = `Enter a valid number for ${field.label.toLowerCase()}.`;
-    } else if (field.min !== undefined && value < field.min) {
-      errors[field.name] = `${field.label} must be at least ${field.min}${field.unit ? ` ${field.unit}` : ""}.`;
-    } else if (field.max !== undefined && value > field.max) {
-      errors[field.name] = `${field.label} must be ${field.max}${field.unit ? ` ${field.unit}` : ""} or less.`;
-    } else {
-      parsed[field.name] = value === 0 ? 0 : value;
-    }
-  }
+  const { parsed, errors } = validateNumericFields(raw, getFlooringFields(raw.unitSystem));
   if (Object.keys(errors).length) return { valid: false, errors };
   return { valid: true, value: { ...parsed, unitSystem: raw.unitSystem } as FlooringInput };
 }
@@ -45,16 +30,17 @@ export function updateInput(input: CalculatorFormInput, name: string, value: str
     return { ...input, [name]: value };
   }
   if (value === input.unitSystem) return input;
-  const converted: Record<string, unknown> = { ...input, unitSystem: value };
-  const from = flooringUnits[input.unitSystem];
+  const from = flooringUnits[input.unitSystem as FlooringUnitSystem];
   const to = flooringUnits[value];
-  for (const name of ["roomLength", "roomWidth", "coveragePerBox"] as const) {
-    const numeric = parseFiniteNumber(input[name]);
-    if (numeric === undefined) continue;
-    const factor = name === "coveragePerBox" ? "areaFactor" : "lengthFactor";
-    const next = numeric * (to[factor] / from[factor]);
-    if (Number.isFinite(next)) converted[name] = next;
-  }
+  const converted = convertNumericFields(
+    input,
+    ["roomLength", "roomWidth", "coveragePerBox"].map((name) => ({ name })),
+    (numeric, field) => {
+      const factor: "areaFactor" | "lengthFactor" = field.name === "coveragePerBox" ? "areaFactor" : "lengthFactor";
+      return numeric * (to[factor] / from[factor]);
+    },
+  );
+  converted.unitSystem = value;
   return converted;
 }
 
@@ -71,26 +57,21 @@ export function calculate(input: FlooringInput): FlooringResult {
   };
 }
 
-const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
-const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
-
 export function formatResult(result: FlooringResult): readonly ResultItem[] {
   const unit = flooringUnits[result.unitSystem].area;
   return [
-    { label: "Boxes Needed", value: `${result.boxesNeeded.toLocaleString("en-US")} ${result.boxesNeeded === 1 ? "box" : "boxes"}`, detail: "Rounded up to full boxes after waste.", emphasis: true },
-    { label: "Estimated Cost", value: currency.format(result.estimatedCost), detail: "Flooring boxes only · before tax and installation supplies", emphasis: true },
-    { label: "Floor Area", value: `${number.format(result.floorArea)} ${unit}` },
-    { label: "Required Area With Waste", value: `${number.format(result.requiredAreaWithWaste)} ${unit}`, detail: `Includes ${number.format(result.waste)}% waste.` },
+    { id: "boxes-needed", label: "Boxes Needed", value: `${result.boxesNeeded.toLocaleString("en-US")} ${result.boxesNeeded === 1 ? "box" : "boxes"}`, detail: "Rounded up to full boxes after waste.", kind: "primary" },
+    { id: "estimated-cost", label: "Estimated Cost", value: formatCurrency(result.estimatedCost), detail: "Flooring boxes only · before tax and installation supplies", kind: "cost" },
+    { id: "floor-area", label: "Floor Area", value: `${formatNumber(result.floorArea)} ${unit}`, kind: "metric" },
+    { id: "required-area-with-waste", label: "Required Area With Waste", value: `${formatNumber(result.requiredAreaWithWaste)} ${unit}`, detail: `Includes ${formatNumber(result.waste)}% waste.`, kind: "metric" },
   ];
 }
 
-export const flooringCalculator: CalculatorDefinition<FlooringInput, FlooringResult> = {
+export const flooringCalculator: CalculatorEngine<FlooringInput, FlooringResult> = {
   slug: "flooring",
-  metadata: calculatorCatalogBySlug.flooring.metadata,
   fields: getFlooringFields("imperial"), fieldGroups: flooringFieldGroups,
   getFields: (input) => getFlooringFields(isFlooringUnitSystem(input.unitSystem) ? input.unitSystem : "imperial"),
   updateInput, createInitialInput: () => ({ ...flooringDefaults }), validate, calculate, formatResult,
   shoppingList: flooringShoppingList,
   resultNote: "For one rectangular floor. Cost excludes underlayment, transitions, tools, delivery, labor, and tax. Check box coverage and installation requirements before buying.",
-  content: flooringContent,
 };

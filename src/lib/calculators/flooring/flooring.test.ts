@@ -9,7 +9,7 @@ function near(actual: number, expected: number) {
 }
 
 test("flooring is registered once and unknown slugs remain unavailable", () => {
-  assert.equal(getCalculator("flooring"), flooringCalculator);
+  assert.equal(getCalculator("flooring")?.slug, flooringCalculator.slug);
   assert.equal(listCalculators().filter((calculator) => calculator.slug === "flooring").length, 1);
   assert.equal(getCalculator("paint")?.slug, "paint");
   for (const slug of ["missing", "constructor", "toString", "__proto__"]) {
@@ -111,10 +111,8 @@ test("flooring rejects invalid fields and preserves invalid edits across switche
   assert.throws(() => calculate({ ...flooringDefaults, coveragePerBox: 0 }), RangeError);
 });
 
-test("flooring definition supplies all inputs, shopping recommendations, and related Paint tool", () => {
+test("flooring engine supplies all inputs and shopping recommendations", () => {
   assert.deepEqual(flooringCalculator.fields.map((field) => field.name), ["unitSystem", "roomLength", "roomWidth", "coveragePerBox", "waste", "pricePerBox"]);
   assert.equal(flooringCalculator.shoppingList?.[0].name, "Flooring");
-  assert.equal(flooringCalculator.content?.related[0].slug, "paint");
-  assert.ok(flooringCalculator.content?.faq.length);
   assert.ok(formatResult(calculate(flooringDefaults)).every((item) => !/NaN|Infinity/.test(item.value)));
 });

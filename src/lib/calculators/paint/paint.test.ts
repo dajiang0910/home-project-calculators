@@ -149,11 +149,10 @@ test("oversized openings are rejected; an exactly covered wall yields zero", () 
   assert.equal(result.estimatedCost, 0);
 });
 
-test("the published definition exposes all results, content, and six shopping recommendations", () => {
+test("the published engine exposes all results and six shopping recommendations", () => {
   const display = formatResult(calculate({ ...paintDefaults }));
   assert.deepEqual(new Set(display.map((item) => item.label)), new Set(["Wall Area", "Door Area", "Window Area", "Paintable Area", "Paint Needed", "Recommended Purchase", "Estimated Material Cost"]));
   assert.equal(display.find((item) => item.label === "Estimated Material Cost")?.value, "$135.00");
   assert.ok(display.every((item) => !/NaN|Infinity/.test(item.value)));
   assert.deepEqual(paintCalculator.shoppingList?.map((item) => item.name), ["Paint", "Primer", "Paint Roller", "Paint Brush", "Painter's Tape", "Drop Cloth"]);
-  assert.ok(paintCalculator.content?.faq.length);
 });
