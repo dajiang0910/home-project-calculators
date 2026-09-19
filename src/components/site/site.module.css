@@ -26,19 +26,7 @@
   text-decoration: none;
 }
 
-.brandMark {
-  display: inline-flex;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 7px;
-  background: var(--hpc-color-brand);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: -.04em;
-}
+.brandLogo { width: 36px; height: 36px; object-fit: contain; }
 
 .brandText { display: grid; gap: 1px; }
 .brandName { font-size: 16px; font-weight: 700; line-height: 1.1; }
@@ -127,19 +115,7 @@
 .footerBrand p, .footerColumn p { color: #fff; font-weight: 700; }
 .footerBrand span, .footerColumn a { color: #b9cbe0; }
 .footerBrand > div > span { display: block; max-width: 250px; margin-top: 6px; line-height: 1.6; }
-.footerMark {
-  display: inline-flex;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: #fff;
-  color: var(--hpc-color-brand) !important;
-  font-size: 12px;
-  font-weight: 800;
-}
+.footerLogo { width: 48px; height: 48px; flex: 0 0 48px; object-fit: contain; }
 .footerColumn { display: grid; align-content: start; gap: 10px; }
 .footerColumn p { margin-bottom: 3px; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
 .footerColumn a { width: fit-content; text-decoration: none; }

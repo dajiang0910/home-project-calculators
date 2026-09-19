@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { listActiveCalculatorCategories } from "@/src/lib/calculators/catalog";
 import styles from "./site.module.css";
 
@@ -8,7 +9,14 @@ export function SiteFooter() {
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
         <div className={styles.footerBrand}>
-          <span className={styles.footerMark} aria-hidden="true">PBL</span>
+          <Image
+            src="/images/brand/project-buy-list-logo-mark.png"
+            alt=""
+            aria-hidden="true"
+            className={styles.footerLogo}
+            width={48}
+            height={48}
+          />
           <div>
             <p>Project Buy List</p>
             <span>Measure with confidence. Buy with a plan.</span>

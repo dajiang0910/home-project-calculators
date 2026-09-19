@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { calculatorCatalog } from "@/src/lib/calculators/catalog";
 import styles from "./site.module.css";
 
@@ -7,7 +8,15 @@ export function SiteHeader() {
     <header className={styles.header}>
       <div className={styles.headerInner}>
         <Link href="/" className={styles.brand} aria-label="Project Buy List home">
-          <span aria-hidden="true" className={styles.brandMark}>PBL</span>
+          <Image
+            src="/images/brand/project-buy-list-logo-mark.png"
+            alt=""
+            aria-hidden="true"
+            className={styles.brandLogo}
+            width={36}
+            height={36}
+            priority
+          />
           <span className={styles.brandText}>
             <span className={styles.brandName}>Project Buy List</span>
             <span className={styles.tagline}>Plan better. Build smarter.</span>
