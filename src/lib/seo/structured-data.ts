@@ -22,6 +22,7 @@ export function organizationStructuredData() {
     "@type": "Organization",
     name: SITE.name,
     url: SITE.url,
+    logo: absoluteUrl("/images/brand/project-buy-list-logo-mark.png"),
   };
 }
 

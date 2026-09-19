@@ -26,7 +26,12 @@ jobs:
       - run: npm run build
       - run: npm run build:vinext
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - name: Test Next.js runtime
+        run: npm run test:e2e
+      - name: Test Vinext Worker runtime
+        run: npm run test:e2e
+        env:
+          E2E_TARGET: vinext
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4

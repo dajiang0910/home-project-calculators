@@ -4,7 +4,7 @@
 
 Home Improvement Calculator is an English-language collection of focused tools for homeowners, renters, and DIY professionals. Each calculator should answer one practical planning question quickly, explain the assumptions behind the number, and make the next action clear.
 
-The first phase established the shared page and calculation framework. Phase two publishes the [Paint Calculator](paint-calculator.md) at `/calculators/paint` with live estimates, editable assumptions, US/metric units, a paint budget, and a basic shopping list.
+Project Buy List publishes seven calculators: paint, flooring, tile, drywall, wallpaper, ceiling paint, and baseboard. Each uses the shared calculation framework, live estimates, editable assumptions, US/metric units, material costs, and a shopping list. The current phase strengthens release checks and verifies production indexing; see the [two-week launch record](launch-observation.md).
 
 ## Information architecture
 
@@ -31,4 +31,4 @@ The calculator publication manifest owns each tool's title, description, categor
 
 ## Scope boundaries
 
-The shared framework owns routing, form state, validation display, and result presentation. A calculator owns its domain inputs, validation rules, formula, units, rounding, and assumptions. The first phase does not publish a calculator or alter the existing starter home page.
+The shared framework owns routing, form state, validation display, and result presentation. A calculator owns its domain inputs, validation rules, formula, units, rounding, and assumptions. New tools require a specification and contract tests before publication. The current launch work preserves the seven tools and their public URLs; expansion follows evidence from existing pages.

@@ -61,7 +61,9 @@ test("unknown calculator slugs return not found", async ({ page }) => {
   const response = await page.goto("/calculators/not-a-calculator");
   expect(response?.status()).toBe(404);
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  const directives = await page.locator('meta[name="robots"]').evaluateAll(nodes => nodes.map(node => node.getAttribute("content")));
+  expect(directives.length).toBeGreaterThan(0);
+  expect(directives.every(value => /\bnoindex\b/.test(value ?? ""))).toBe(true);
 });
 
 test("calculator pages keep their SEO link and fit on a phone", async ({ page }) => {
