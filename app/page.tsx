@@ -15,11 +15,16 @@ import { organizationStructuredData, websiteStructuredData } from "@/src/lib/seo
 import { SITE } from "@/src/lib/seo/site";
 import { createPageMetadata } from "@/src/lib/seo/metadata";
 
-export const metadata: Metadata = createPageMetadata({
-  title: SITE.name,
-  description: SITE.description,
-  path: "/",
-});
+const homeTitle = "Home Improvement Calculators | Project Buy List";
+
+export const metadata: Metadata = {
+  ...createPageMetadata({
+    title: homeTitle,
+    description: SITE.description,
+    path: "/",
+  }),
+  title: { absolute: homeTitle },
+};
 
 export default function Home() {
   const featured = calculatorCatalog.filter((calculator) => calculator.featured);
