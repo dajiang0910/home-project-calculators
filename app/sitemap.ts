@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 import { calculatorCatalog, listActiveCalculatorCategories } from "@/src/lib/calculators/catalog";
 import { absoluteUrl } from "@/src/lib/seo/urls";
+import { siteNoIndex } from "@/src/lib/seo/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  if (siteNoIndex) return [];
   const staticPages: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "weekly", priority: 1 },
     { url: absoluteUrl("/calculators"), changeFrequency: "weekly", priority: 0.9 },

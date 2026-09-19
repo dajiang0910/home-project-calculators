@@ -1,4 +1,5 @@
 import type { CalculatorContent } from "../../lib/calculators/types";
+import { drywallExample } from "./examples";
 
 export const drywallContent: CalculatorContent = {
   intro: "Plan drywall for a rectangular room without guesswork. Choose walls, ceiling, or both; subtract doors and windows; then estimate full sheets and material cost with a waste allowance.",
@@ -15,18 +16,7 @@ export const drywallContent: CalculatorContent = {
     { label: "Sheets Needed", expression: "Round up (area with waste ÷ area per sheet)" },
     { label: "Estimated Cost", expression: "sheets needed × price per sheet" },
   ],
-  example: {
-    description: "A 12 × 10 ft room with 8 ft walls and ceiling, one 3 × 7 ft door, two 3 × 4 ft windows, 4 × 8 ft sheets, 10% waste, and a $15 sheet price.",
-    steps: [
-      "Walls: 2 × (12 + 10) × 8 = 352 sq ft.",
-      "Openings: (1 × 3 × 7) + (2 × 3 × 4) = 45 sq ft.",
-      "Walls plus ceiling: 352 − 45 + 120 = 427 sq ft.",
-      "With waste: 427 × 1.10 = 469.7 sq ft.",
-      "Each 4 × 8 ft sheet covers 32 sq ft; 469.7 ÷ 32 = 14.68, so round up to 15 sheets.",
-      "15 × $15 = $225 in drywall sheets.",
-    ],
-    conclusion: "Buy 15 sheets. The drywall estimate is $225 before tax and installation supplies.",
-  },
+  example: drywallExample,
   faq: [
     { question: "How much drywall waste should I allow?", answer: "The editable default is 10%. Simple rooms with a planned layout may need less; many corners, small sections, damaged sheets, or difficult access may require more." },
     { question: "Should I subtract doors and windows?", answer: "This calculator deducts them when walls are selected. For small openings, some installers leave them in the estimate because offcuts may not fit elsewhere; raise the waste allowance if your layout produces unusable pieces." },

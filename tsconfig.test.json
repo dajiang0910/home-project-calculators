@@ -14,6 +14,10 @@
     "src/lib/calculators/**/*.ts",
     "src/lib/seo/site.ts",
     "src/lib/seo/site.test.ts",
+    "src/lib/seo/migration.ts",
+    "src/lib/seo/migration.test.ts",
+    "src/lib/analytics/events.ts",
+    "src/lib/analytics/events.test.ts",
     "src/components/calculators/presentation.ts",
     "src/components/calculators/presentation.test.ts",
     "src/content/calculators/**/*.ts"

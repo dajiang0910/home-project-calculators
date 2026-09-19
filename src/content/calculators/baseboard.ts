@@ -1,4 +1,5 @@
 import type { CalculatorContent } from "../../lib/calculators/types";
+import { baseboardExample } from "./examples";
 
 export const baseboardContent: CalculatorContent = {
   intro: "How much baseboard do I need? Enter the length and width of your room, subtract the door openings, then add a practical allowance for miter cuts, inside corners, and spare material.",
@@ -14,17 +15,7 @@ export const baseboardContent: CalculatorContent = {
     { label: "Pieces Needed", expression: "round up (baseboard needed ÷ length per piece)" },
     { label: "Estimated Cost", expression: "pieces needed × price per piece" },
   ],
-  example: {
-    description: "A 14 × 12 ft room with one 3 ft doorway, 8 ft baseboard pieces, 10% waste, and a price of $18 per piece.",
-    steps: [
-      "Room perimeter: 2 × (14 + 12) = 52 linear ft.",
-      "Subtract one 3 ft doorway: 52 − 3 = 49 linear ft of baseboard run.",
-      "Add 10% waste: 49 × 1.10 = 53.9 linear ft needed.",
-      "53.9 ÷ 8 = 6.7375 pieces; round up to 7 pieces.",
-      "7 × $18 = $126 estimated baseboard cost.",
-    ],
-    conclusion: "Buy 7 pieces. The baseboard estimate is $126 before tax, fasteners, finishing materials, and installation.",
-  },
+  example: baseboardExample,
   faq: [
     { question: "Should I subtract door openings?", answer: "Yes. Baseboard typically stops at the door casing, so enter each opening where trim will not run. Do not subtract the width of the casing itself unless your measurement already excludes it." },
     { question: "How much baseboard waste should I add?", answer: "The default is 10%. Straight walls with few corners may need less, while many inside corners, outside corners, angled walls, short leftovers, or a first-time installation may need more. The allowance covers cuts and spare material, not additional rooms." },

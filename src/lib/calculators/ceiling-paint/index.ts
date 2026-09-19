@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
+import { ceilWholePurchase, multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import {
   ceilingPaintDefaults,
@@ -92,7 +92,7 @@ export function calculate(input: CeilingPaintInput): CeilingPaintResult {
     totalCoverageArea,
     paintNeeded,
     recommendedPurchase,
-    estimatedCost: recommendedPurchase * values.pricePerUnit,
+    estimatedCost: multiplyCurrency(recommendedPurchase, values.pricePerUnit),
     coverage: values.coverage,
     coats: values.coats,
     waste: values.waste,

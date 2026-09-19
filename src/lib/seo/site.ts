@@ -28,11 +28,18 @@ export function resolveSiteUrl(value: string | undefined, environment = process.
 
 const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
+export function isSiteNoIndex(value: string | undefined): boolean {
+  return value === "1" || value?.toLowerCase() === "true";
+}
+
+export const siteNoIndex = isSiteNoIndex(process.env.SITE_NOINDEX);
+
 export const SITE = {
-  name: "Home Project Calculators",
-  shortName: "HPC",
+  name: "Project Buy List",
+  shortName: "PBL",
   url: resolveSiteUrl(configuredUrl),
-  description: "Free, transparent calculators for home improvement materials, quantities, waste, and project costs.",
+  descriptor: "Home Improvement Calculators & Material Planning Tools",
+  description: "Home improvement calculators and material planning tools for quantities, waste, purchase packages, and project costs.",
   locale: "en_US",
   githubIssuesUrl: "https://github.com/dajiang0910/home-project-calculators/issues",
 } as const;

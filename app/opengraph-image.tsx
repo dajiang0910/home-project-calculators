@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Home Project Calculators — measure once, buy with confidence";
+export const alt = "Project Buy List — measure once, buy with confidence";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,8 +10,8 @@ export default function OpenGraphImage() {
       <div style={{ position: "absolute", inset: 0, display: "flex", opacity: .18, backgroundImage: "linear-gradient(#125de6 1px, transparent 1px), linear-gradient(90deg, #125de6 1px, transparent 1px)", backgroundSize: "42px 42px" }} />
       <div style={{ display: "flex", width: "100%", position: "relative", flexDirection: "column", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "18px", fontSize: 28, fontWeight: 700 }}>
-          <div style={{ width: 58, height: 58, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 12, background: "#125de6", color: "#fff", fontSize: 20 }}>HP</div>
-          Home Project Calculators
+          <div style={{ width: 58, height: 58, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 12, background: "#125de6", color: "#fff", fontSize: 18 }}>PBL</div>
+          Project Buy List
         </div>
         <div style={{ display: "flex", maxWidth: 900, flexDirection: "column" }}>
           <div style={{ color: "#125de6", fontSize: 22, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>Practical estimates for real projects</div>

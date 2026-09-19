@@ -1,4 +1,5 @@
 import type { CalculatorContent } from "../../lib/calculators/types";
+import { ceilingPaintExample } from "./examples";
 
 export const ceilingPaintContent: CalculatorContent = {
   intro: "How much paint do I need for a ceiling? Enter the length and width of one rectangular ceiling, then account for coats, paint coverage, overhead waste, and the number of whole gallons or liters to buy.",
@@ -14,17 +15,7 @@ export const ceilingPaintContent: CalculatorContent = {
     { label: "Recommended Purchase", expression: "paint needed rounded up to the next whole gallon or liter" },
     { label: "Estimated Material Cost", expression: "recommended purchase × price per gallon or liter" },
   ],
-  example: {
-    description: "A 14 × 12 ft ceiling with two coats, paint rated at 350 sq ft per gallon, 15% extra waste, and paint priced at $45 per gallon.",
-    steps: [
-      "Ceiling area: 14 × 12 = 168 sq ft.",
-      "Two coats: 168 × 2 = 336 sq ft of total coverage.",
-      "Base paint: 336 ÷ 350 = 0.96 gallons.",
-      "With 15% extra waste: 0.96 × 1.15 = 1.10 gallons.",
-      "Round up to 2 gallons; 2 × $45 = $90 estimated paint cost.",
-    ],
-    conclusion: "Buy 2 gallons for this example. The estimate is for ceiling paint only, before tax and preparation supplies.",
-  },
+  example: ceilingPaintExample,
   faq: [
     { question: "How much ceiling paint should I buy?", answer: "Measure the ceiling area, multiply by the number of coats, divide by the coverage on your paint label, and add an allowance for roller loss and touch-ups. This calculator does those steps and rounds up to whole gallons or liters." },
     { question: "Why does ceiling paint need extra waste?", answer: "Overhead work can leave more paint in the roller, tray, and drop cloth, and textured ceilings can absorb more product. The default 15% is a planning starting point; adjust it for texture, repairs, and your painting method." },

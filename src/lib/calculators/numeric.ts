@@ -18,3 +18,29 @@ export function ceilWholePurchase(value: number): number {
 export function floorWholeCapacity(value: number): number {
   return Math.floor(value + integerTolerance(value));
 }
+
+/** Multiply a whole purchase quantity by a decimal price and round only the final USD cent. */
+export function multiplyCurrency(quantity: number, unitPrice: number): number {
+  if (!Number.isSafeInteger(quantity) || quantity < 0 || !Number.isFinite(unitPrice) || unitPrice < 0) {
+    throw new RangeError("Currency multiplication requires a non-negative safe integer quantity and finite non-negative price.");
+  }
+
+  const text = unitPrice.toString().toLowerCase();
+  const [mantissa, exponentText] = text.split("e");
+  const exponent = exponentText ? Number(exponentText) : 0;
+  const sign = mantissa.startsWith("-") ? -BigInt(1) : BigInt(1);
+  const unsignedMantissa = mantissa.replace(/^[+-]/, "");
+  const [whole, fraction = ""] = unsignedMantissa.split(".");
+  const digits = BigInt(`${whole}${fraction}` || "0");
+  const scale = fraction.length - exponent;
+  const normalizedDigits = scale < 0 ? digits * BigInt(10) ** BigInt(-scale) : digits;
+  const normalizedScale = Math.max(0, scale);
+  const denominator = BigInt(10) ** BigInt(normalizedScale);
+  const centsNumerator = BigInt(quantity) * normalizedDigits * BigInt(100);
+  const absoluteCents = centsNumerator / denominator;
+  const remainder = centsNumerator % denominator;
+  const roundedCents = absoluteCents + (remainder * BigInt(2) >= denominator ? BigInt(1) : BigInt(0));
+  const result = Number(sign * roundedCents) / 100;
+  if (!Number.isFinite(result)) throw new RangeError("Currency total is outside the supported numeric range.");
+  return result;
+}

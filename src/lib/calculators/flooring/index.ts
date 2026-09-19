@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase } from "../numeric";
+import { ceilWholePurchase, multiplyCurrency } from "../numeric";
 import { convertNumericFields, formatCurrency, formatNumber, validateNumericFields } from "../shared";
 import { flooringDefaults, flooringFieldGroups, flooringShoppingList, flooringUnits, getFlooringFields, isFlooringUnitSystem, type FlooringInput, type FlooringUnitSystem } from "./config";
 
@@ -53,7 +53,7 @@ export function calculate(input: FlooringInput): FlooringResult {
   const boxesNeeded = ceilWholePurchase(requiredAreaWithWaste / values.coveragePerBox);
   return {
     unitSystem: values.unitSystem, floorArea, requiredAreaWithWaste, boxesNeeded,
-    estimatedCost: boxesNeeded * values.pricePerBox, waste: values.waste,
+    estimatedCost: multiplyCurrency(boxesNeeded, values.pricePerBox), waste: values.waste,
   };
 }
 

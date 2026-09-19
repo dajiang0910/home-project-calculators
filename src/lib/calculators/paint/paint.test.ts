@@ -94,7 +94,7 @@ test("metric switching preserves dimensions, coverage, underlying paint, and uni
   near(result.paintGallons, 2.332, 1e-6);
   near(result.paintNeeded, 2.332 * LITERS_PER_GALLON, 1e-6);
   assert.equal(result.recommendedPurchase, 9);
-  near(result.estimatedCost, 9 * 45 / LITERS_PER_GALLON, 1e-6);
+  assert.equal(result.estimatedCost, 106.99);
   const display = formatResult(result);
   assert.equal(display.find((item) => item.label === "Paintable Area")?.value, "34.47 m²");
   assert.equal(display.find((item) => item.label === "Recommended Purchase")?.value, "9 L");

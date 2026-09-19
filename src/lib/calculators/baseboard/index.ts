@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
+import { ceilWholePurchase, multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import {
   baseboardDefaults,
@@ -103,7 +103,7 @@ export function calculate(input: BaseboardInput): BaseboardResult {
     requiredLengthWithWaste,
     boardLength: values.boardLength,
     piecesNeeded,
-    estimatedCost: piecesNeeded * values.pricePerBoard,
+    estimatedCost: multiplyCurrency(piecesNeeded, values.pricePerBoard),
     waste: values.waste,
   };
 }

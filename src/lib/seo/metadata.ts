@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE } from "./site";
+import { SITE, siteNoIndex } from "./site";
 
 type PageMetadataInput = {
   title: string;
@@ -15,6 +15,7 @@ export function createPageMetadata({ title, description, path, keywords, image }
     description,
     keywords: keywords ? [...keywords] : undefined,
     alternates: { canonical: path },
+    robots: siteNoIndex ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "website",
       locale: SITE.locale,

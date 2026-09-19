@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
+import { ceilWholePurchase, multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import {
   getTileFields,
@@ -96,7 +96,7 @@ export function calculate(input: TileInput): TileResult {
     tilesNeeded,
     boxesNeeded,
     tilesPurchased,
-    estimatedCost: boxesNeeded * values.pricePerBox,
+    estimatedCost: multiplyCurrency(boxesNeeded, values.pricePerBox),
     waste: values.waste,
   };
 }

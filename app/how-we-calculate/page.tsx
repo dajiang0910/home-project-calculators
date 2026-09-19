@@ -8,7 +8,7 @@ import { breadcrumbStructuredData } from "@/src/lib/seo/structured-data";
 
 export const metadata: Metadata = createPageMetadata({
   title: "How We Calculate",
-  description: "Learn how Home Project Calculators handles measurements, unit conversions, waste, package rounding, costs, and estimate limitations.",
+  description: "Learn how Project Buy List handles measurements, unit conversions, waste, package rounding, costs, and estimate limitations.",
   path: "/how-we-calculate",
 });
 

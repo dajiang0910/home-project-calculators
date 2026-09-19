@@ -4,7 +4,7 @@ import styles from "@/src/components/content/content.module.css";
 import { SITE } from "@/src/lib/seo/site";
 import { createPageMetadata } from "@/src/lib/seo/metadata";
 
-export const metadata: Metadata = createPageMetadata({ title: "Contact", description: "Report calculator issues or suggest improvements to Home Project Calculators.", path: "/contact" });
+export const metadata: Metadata = createPageMetadata({ title: "Contact", description: "Report calculator issues or suggest improvements to Project Buy List.", path: "/contact" });
 
 export default function ContactPage() {
   return <ContentPage eyebrow="Questions and feedback" title="Contact" intro="Found a confusing assumption, a calculation edge case, or a project tool that should exist? Useful feedback makes the whole catalog better.">

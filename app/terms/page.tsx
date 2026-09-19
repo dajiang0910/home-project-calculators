@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContentPage } from "@/src/components/content/ContentPage";
 import { createPageMetadata } from "@/src/lib/seo/metadata";
 
-export const metadata: Metadata = createPageMetadata({ title: "Terms of Use", description: "Terms for using Home Project Calculators and its planning estimates.", path: "/terms" });
+export const metadata: Metadata = createPageMetadata({ title: "Terms of Use", description: "Terms for using Project Buy List and its planning estimates.", path: "/terms" });
 
 export default function TermsPage() {
   return <ContentPage eyebrow="Site information" title="Terms of use" intro="Use these calculators as planning aids and verify the details that depend on your property, products, supplier, and local requirements.">

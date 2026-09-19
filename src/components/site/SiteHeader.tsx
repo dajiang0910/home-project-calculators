@@ -6,10 +6,10 @@ export function SiteHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link href="/" className={styles.brand} aria-label="Home Project Calculators home">
-          <span aria-hidden="true" className={styles.brandMark}>HP</span>
+        <Link href="/" className={styles.brand} aria-label="Project Buy List home">
+          <span aria-hidden="true" className={styles.brandMark}>PBL</span>
           <span className={styles.brandText}>
-            <span className={styles.brandName}>Home Project Calculators</span>
+            <span className={styles.brandName}>Project Buy List</span>
             <span className={styles.tagline}>Plan better. Build smarter.</span>
           </span>
         </Link>

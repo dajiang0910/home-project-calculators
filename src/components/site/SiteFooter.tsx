@@ -8,9 +8,9 @@ export function SiteFooter() {
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
         <div className={styles.footerBrand}>
-          <span className={styles.footerMark} aria-hidden="true">HP</span>
+          <span className={styles.footerMark} aria-hidden="true">PBL</span>
           <div>
-            <p>Home Project Calculators</p>
+            <p>Project Buy List</p>
             <span>Measure with confidence. Buy with a plan.</span>
           </div>
         </div>
@@ -31,7 +31,7 @@ export function SiteFooter() {
           <Link href="/terms">Terms</Link>
         </div>
       </div>
-      <div className={styles.footerBottom}>© {new Date().getFullYear()} Home Project Calculators. Estimates are for planning purposes.</div>
+      <div className={styles.footerBottom}>© {new Date().getFullYear()} Project Buy List. Estimates are for planning purposes.</div>
     </footer>
   );
 }

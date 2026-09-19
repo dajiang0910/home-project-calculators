@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase, parseFiniteNumber } from "../numeric";
+import { ceilWholePurchase, multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import {
   drywallDefaults,
@@ -130,7 +130,7 @@ export function calculate(input: DrywallInput): DrywallResult {
     requiredAreaWithWaste,
     sheetArea,
     sheetsNeeded,
-    estimatedCost: sheetsNeeded * values.pricePerSheet,
+    estimatedCost: multiplyCurrency(sheetsNeeded, values.pricePerSheet),
     waste: values.waste,
   };
 }

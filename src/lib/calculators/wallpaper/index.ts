@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { ceilWholePurchase, floorWholeCapacity, parseFiniteNumber } from "../numeric";
+import { ceilWholePurchase, floorWholeCapacity, multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import {
   getWallpaperFields,
@@ -132,7 +132,7 @@ export function calculate(input: WallpaperInput): WallpaperResult {
     stripsPerRoll: plan.stripsPerRoll,
     stripsNeeded,
     rollsNeeded,
-    estimatedCost: rollsNeeded * values.pricePerRoll,
+    estimatedCost: multiplyCurrency(rollsNeeded, values.pricePerRoll),
     waste: values.waste,
   };
 }

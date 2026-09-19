@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/src/components/site/SiteFooter";
 import { SiteHeader } from "@/src/components/site/SiteHeader";
-import { SITE } from "@/src/lib/seo/site";
+import { SITE, siteNoIndex } from "@/src/lib/seo/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     template: `%s | ${SITE.name}`,
   },
   description: SITE.description,
+  robots: siteNoIndex ? { index: false, follow: false } : undefined,
   applicationName: SITE.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: SITE.locale,

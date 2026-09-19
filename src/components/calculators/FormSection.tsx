@@ -10,17 +10,18 @@ type FormSectionProps = {
   errors?: ValidationErrors;
   expanded?: boolean;
   onToggle?: (open: boolean) => void;
+  onOpen?: () => void;
   onChange: (name: string, value: string) => void;
 };
 
-export function FormSection({ slug, group, fields, input, errors, expanded, onToggle, onChange }: FormSectionProps) {
+export function FormSection({ slug, group, fields, input, errors, expanded, onToggle, onOpen, onChange }: FormSectionProps) {
   const body = <>
     {group.description ? <p className={styles.groupDescription}>{group.description}</p> : null}
     <div className={styles.fields}>{fields.map((field) => <FormField key={field.name} slug={slug} field={field} input={input} errors={errors} onChange={onChange} />)}</div>
   </>;
   const hasErrors = fields.some((field) => errors?.[field.name]);
   if (group.collapsible) {
-    return <details className={styles.advanced} open={expanded || hasErrors || false} onToggle={(event) => onToggle?.(event.currentTarget.open)}><summary>{group.title}</summary>{body}</details>;
+    return <details className={styles.advanced} open={expanded || hasErrors || false} onToggle={(event) => onToggle?.(event.currentTarget.open)}><summary onClick={() => { if (!expanded && !hasErrors) onOpen?.(); }}>{group.title}</summary>{body}</details>;
   }
   return <fieldset className={styles.fieldset}><legend>{group.title}</legend>{body}</fieldset>;
 }

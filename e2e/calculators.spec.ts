@@ -60,6 +60,8 @@ test("zero openings hide their unused fields", async ({ page }) => {
 test("unknown calculator slugs return not found", async ({ page }) => {
   const response = await page.goto("/calculators/not-a-calculator");
   expect(response?.status()).toBe(404);
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
 test("calculator pages keep their SEO link and fit on a phone", async ({ page }) => {

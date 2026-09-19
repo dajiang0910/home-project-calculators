@@ -1,4 +1,4 @@
-# Home Project Calculators Design System
+# Project Buy List Design System
 
 The calculator pages share a compact blue and white planning UI based on `docs/design-reference/paintCalculator.png`. The system keeps engines independent from presentation: engines provide fields, validation, calculation, formatted results, shopping items, and notes; manifests provide metadata and presentation; shared React components render those values.
 

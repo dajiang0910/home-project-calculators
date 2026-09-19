@@ -1,6 +1,6 @@
-# Home Project Calculators
+# Project Buy List
 
-Home improvement calculators for material quantities, waste, purchase packages, and estimated cost. The application uses Next.js 16, React 19, strict TypeScript, and a shared calculator UI.
+Home improvement calculators and material planning tools for quantities, waste, purchase packages, and estimated cost. The application uses Next.js 16, React 19, strict TypeScript, and a shared calculator UI.
 
 ## Run locally
 
@@ -12,7 +12,7 @@ npm run dev
 Open `http://localhost:3000`. Development and tests use that origin when `NEXT_PUBLIC_SITE_URL` is absent. Production builds require an HTTP(S) site origin:
 
 ```bash
-$env:NEXT_PUBLIC_SITE_URL = "https://calculators.example.com"
+$env:NEXT_PUBLIC_SITE_URL = "https://projectbuylist.com"
 npm run build
 npm run start
 ```

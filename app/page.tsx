@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CalculatorCard } from "@/src/components/discovery/CalculatorCard";
@@ -11,6 +12,14 @@ import {
   listCalculatorsByCategory,
 } from "@/src/lib/calculators/catalog";
 import { organizationStructuredData, websiteStructuredData } from "@/src/lib/seo/structured-data";
+import { SITE } from "@/src/lib/seo/site";
+import { createPageMetadata } from "@/src/lib/seo/metadata";
+
+export const metadata: Metadata = createPageMetadata({
+  title: SITE.name,
+  description: SITE.description,
+  path: "/",
+});
 
 export default function Home() {
   const featured = calculatorCatalog.filter((calculator) => calculator.featured);
@@ -24,7 +33,7 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.heroInner}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Practical estimates for real projects</p>
+            <p className={styles.eyebrow}>{SITE.descriptor}</p>
             <h1>Measure once. Buy with confidence.</h1>
             <p className={styles.heroLead}>Plan home improvement materials, waste, package quantities, and cost with calculators that show their assumptions.</p>
             <CalculatorSearch calculators={calculatorCatalog} />

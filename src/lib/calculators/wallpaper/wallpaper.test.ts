@@ -3,6 +3,7 @@ import test from "node:test";
 import { calculate, formatResult, updateInput, validate, wallpaperCalculator } from "./index";
 import { getWallpaperFields, wallpaperDefaults, wallpaperUnits } from "./config";
 import { getCalculator, listCalculators } from "../registry";
+import { wallpaperExample } from "../../../content/calculators/examples";
 
 function near(actual: number, expected: number, relativeTolerance = 1e-12) {
   assert.ok(Math.abs(actual - expected) <= Math.max(1, Math.abs(expected)) * relativeTolerance, `${actual} ≠ ${expected}`);
@@ -32,6 +33,14 @@ test("wallpaper reference: 25 strips, 3 per roll, 9 rolls, and $360", () => {
     ["Adjusted Drop", "8.54 ft"],
     ["Strips per Roll", "3 strips"],
   ]);
+});
+
+test("wallpaper worked example is generated from the same default calculation", () => {
+  const result = calculate(wallpaperDefaults);
+  const display = formatResult(result);
+  assert.ok(wallpaperExample.conclusion.includes(display[0].value));
+  assert.ok(wallpaperExample.conclusion.includes(display[1].value));
+  assert.ok(wallpaperExample.steps.some((step) => step.includes(`${result.stripsNeeded}`)));
 });
 
 test("pattern repeat changes drops per roll and whole-roll purchase", () => {

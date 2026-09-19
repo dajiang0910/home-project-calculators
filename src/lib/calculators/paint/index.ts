@@ -1,5 +1,5 @@
 import type { CalculatorEngine, CalculatorFormInput, ResultItem, ValidationResult } from "../types";
-import { parseFiniteNumber } from "../numeric";
+import { multiplyCurrency, parseFiniteNumber } from "../numeric";
 import { formatCurrency, formatNumber } from "../shared";
 import { getPaintFields, paintDefaults, paintFieldGroups, paintNumericFields, paintShoppingList, type PaintInput } from "./config";
 import { convertPaintValue, isPaintUnitSystem, paintUnits, unitFactor, type PaintUnitSystem } from "./units";
@@ -104,7 +104,7 @@ export function calculate(input: PaintInput): PaintResult {
   return {
     unitSystem: values.unitSystem, wallArea, doorArea, windowArea, paintableArea,
     totalCoverageArea, baseGallons, paintGallons, paintNeeded, recommendedPurchase,
-    estimatedCost: recommendedPurchase * values.pricePerUnit, waste: values.waste,
+    estimatedCost: multiplyCurrency(recommendedPurchase, values.pricePerUnit), waste: values.waste,
   };
 }
 
